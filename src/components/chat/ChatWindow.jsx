@@ -3,10 +3,16 @@ import Header from "../layout/Header";
 import ChatInput from "./ChatInput";
 import Message from "./Message";
 import EmptyState from "./EmptyState";
+import TypingIndicator from "./TypingIndicator";
 import useChat from "../../hooks/useChat";
 
 function ChatWindow() {
-  const { messages, loading, sendMessage } = useChat();
+  const {
+    messages,
+    loading,
+    streaming,
+    sendMessage,
+  } = useChat();
 
   const bottomRef = useRef(null);
 
@@ -14,7 +20,7 @@ function ChatWindow() {
     bottomRef.current?.scrollIntoView({
       behavior: "smooth",
     });
-  }, [messages, loading]);
+  }, [messages, loading, streaming]);
 
   return (
     <main className="flex flex-1 flex-col bg-[#212121]">
@@ -33,15 +39,9 @@ function ChatWindow() {
               />
             ))}
 
-            {loading && (
-              <div className="flex justify-start mb-5">
-                <div className="bg-zinc-800 text-white rounded-2xl px-4 py-3 animate-pulse">
-                  Gemini is typing...
-                </div>
-              </div>
-            )}
+            {loading && <TypingIndicator />}
 
-            <div ref={bottomRef}></div>
+            <div ref={bottomRef} />
           </>
         )}
       </div>
@@ -49,6 +49,7 @@ function ChatWindow() {
       <ChatInput
         sendMessage={sendMessage}
         loading={loading}
+        streaming={streaming}
       />
     </main>
   );
