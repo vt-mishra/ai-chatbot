@@ -4,7 +4,7 @@ import ChatInput from "./ChatInput";
 import Message from "./Message";
 import EmptyState from "./EmptyState";
 import TypingIndicator from "./TypingIndicator";
-import useChat from "../../hooks/useChat";
+import { useChatContext } from "../../context/ChatContext";
 
 function ChatWindow() {
   const {
@@ -12,13 +12,14 @@ function ChatWindow() {
     loading,
     streaming,
     sendMessage,
-  } = useChat();
+  } = useChatContext();
 
   const bottomRef = useRef(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({
       behavior: "smooth",
+      block: "end",
     });
   }, [messages, loading, streaming]);
 
@@ -33,7 +34,7 @@ function ChatWindow() {
           <>
             {messages.map((message, index) => (
               <Message
-                key={index}
+                key={message.id ?? index}
                 role={message.role}
                 text={message.text}
               />

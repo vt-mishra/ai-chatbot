@@ -1,20 +1,25 @@
 const STORAGE_KEY = "ai-chatbot-conversations";
 
-export function saveConversations(conversations) {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(conversations)
-  );
+export function loadConversations() {
+  try {
+    const data = localStorage.getItem(STORAGE_KEY);
+
+    if (!data) return [];
+
+    return JSON.parse(data);
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
 }
 
-export function loadConversations() {
-  const data = localStorage.getItem(STORAGE_KEY);
-
-  if (!data) return [];
-
+export function saveConversations(conversations) {
   try {
-    return JSON.parse(data);
-  } catch {
-    return [];
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(conversations)
+    );
+  } catch (error) {
+    console.error(error);
   }
 }
