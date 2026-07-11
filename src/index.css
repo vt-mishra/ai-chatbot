@@ -1,12 +1,63 @@
 @import "tailwindcss";
 
-body {
+/* ==========================
+   THEME VARIABLES
+========================== */
+
+:root {
+  --bg: #ffffff;
+  --sidebar: #f8f8f8;
+  --header: #ffffff;
+  --card: #ffffff;
+  --input: #f3f4f6;
+
+  --text: #111827;
+  --text-secondary: #6b7280;
+
+  --border: #e5e7eb;
+
+  --assistant: #f3f4f6;
+  --user: #2563eb;
+}
+
+html.dark {
+  --bg: #212121;
+  --sidebar: #171717;
+  --header: #202020;
+  --card: #2b2b2b;
+  --input: #2b2b2b;
+
+  --text: #ffffff;
+  --text-secondary: #a1a1aa;
+
+  --border: #3f3f46;
+
+  --assistant: #2b2b2b;
+  --user: #2563eb;
+}
+
+/* ==========================
+   GLOBAL
+========================== */
+
+html,
+body,
+#root {
   margin: 0;
   padding: 0;
-  background-color: #212121;
-  color: white;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
   font-family: Inter, system-ui, sans-serif;
+  transition:
+    background .25s ease,
+    color .25s ease;
 }
+
+/* ==========================
+   Scrollbar
+========================== */
+
 ::-webkit-scrollbar {
   width: 4px;
 }
@@ -17,4 +68,8 @@ body {
 
 *:hover::-webkit-scrollbar-thumb {
   background: #52525b;
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-secondary);
 }

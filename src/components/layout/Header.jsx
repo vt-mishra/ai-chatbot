@@ -1,11 +1,20 @@
 function Header() {
   return (
-    <header className="h-16 border-b border-zinc-800 flex items-center px-6">
-
-      <h2 className="text-lg font-semibold">
+    <header
+      className="flex h-16 items-center px-6 transition-colors duration-300"
+      style={{
+        background: "var(--header)",
+        borderBottom: "1px solid var(--border)",
+      }}
+    >
+      <h2
+        className="text-lg font-semibold"
+        style={{
+          color: "var(--text)",
+        }}
+      >
         Gemini Chatbot
       </h2>
-
     </header>
   );
 }

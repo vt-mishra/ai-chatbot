@@ -26,14 +26,22 @@ function Message({
     return (
       <div className="group mb-6 flex justify-start">
         <div className="max-w-4xl">
-          <img
-            src={image}
-            alt={prompt}
-            onClick={() => window.open(image, "_blank")}
-            className="max-w-xl cursor-pointer rounded-2xl transition hover:opacity-90"
-          />
+      <img
+  src={image}
+  alt={prompt}
+  onClick={() => window.open(image, "_blank")}
+  className="max-w-xl cursor-pointer rounded-2xl border transition hover:opacity-90"
+  style={{
+    borderColor: "var(--border)",
+  }}
+/>
 
-          <p className="mt-2 text-sm text-zinc-400">
+         <p
+  className="mt-2 text-sm"
+  style={{
+    color: "var(--text-secondary)",
+  }}
+>
             {prompt}
           </p>
 
@@ -55,36 +63,61 @@ function Message({
       }`}
     >
       <div className="max-w-4xl">
-        <div
-          className={`rounded-2xl px-5 py-4 shadow-sm ${
-            isUser
-              ? "bg-blue-600 text-white"
-              : "bg-zinc-800 text-white"
-          }`}
-        >
+     <div
+  className="rounded-2xl px-5 py-4 shadow-sm transition-colors duration-300"
+  style={{
+    background: isUser
+      ? "var(--user-message)"
+      : "var(--assistant-message)",
+    color: "var(--text)",
+    border: isUser
+      ? "none"
+      : "1px solid var(--border)",
+  }}
+>
           {isUser ? (
             <>
               {image && (
                 <div className="mb-3 overflow-hidden rounded-xl">
-                  <img
-                    src={image}
-                    alt="uploaded"
-                    className="max-h-80 w-full rounded-xl object-cover"
-                  />
+             <img
+  src={image}
+  alt="uploaded"
+  className="max-h-80 w-full rounded-xl border object-cover"
+  style={{
+    borderColor: "var(--border)",
+  }}
+/>
                 </div>
               )}
 {fileName && (
-    <div className="mb-3 rounded-xl bg-zinc-700 p-3">
+   <div
+  className="mb-3 rounded-xl p-3"
+  style={{
+    background: "var(--card)",
+    border: "1px solid var(--border)",
+  }}
+>
         📄 {fileName}
     </div>
 )}
 {fileName && (
-  <div className="mb-3 flex items-center gap-3 rounded-xl border border-zinc-600 bg-zinc-700 p-3">
+<div
+  className="mb-3 flex items-center gap-3 rounded-xl p-3"
+  style={{
+    background: "var(--card)",
+    border: "1px solid var(--border)",
+  }}
+>
     <span className="text-2xl">📄</span>
 
     <div>
       <div className="font-medium">{fileName}</div>
-      <div className="text-xs text-zinc-300">
+   <div
+  className="text-xs"
+  style={{
+    color: "var(--text-secondary)",
+  }}
+>
         {fileType}
       </div>
     </div>
@@ -102,11 +135,14 @@ function Message({
               components={{
                 img({ src, alt }) {
                   return (
-                    <img
-                      src={src}
-                      alt={alt}
-                      className="my-3 max-h-96 rounded-xl"
-                    />
+                 <img
+  src={src}
+  alt={alt}
+  className="my-3 max-h-96 rounded-xl border"
+  style={{
+    borderColor: "var(--border)",
+  }}
+/>
                   );
                 },
 
@@ -124,9 +160,16 @@ function Message({
                   }
 
                   return (
-                    <code className="rounded bg-zinc-900 px-1 py-0.5">
-                      {children}
-                    </code>
+                   <code
+  className="rounded px-1 py-0.5"
+  style={{
+    background: "var(--card)",
+    color: "var(--text)",
+    border: "1px solid var(--border)",
+  }}
+>
+  {children}
+</code>
                   );
                 },
               }}
@@ -138,12 +181,28 @@ function Message({
 
         {isUser ? (
           <div className="mt-2 flex justify-end opacity-0 transition-all duration-200 group-hover:opacity-100">
-            <button
-              onClick={() => onEdit?.(messageId)}
-              className="rounded-lg p-2 hover:bg-zinc-700"
-              title="Edit Prompt"
-            >
-              <FiEdit2 size={16} />
+          <button
+  onClick={() => onEdit?.(messageId)}
+  title="Edit Prompt"
+  className="rounded-lg p-2 transition"
+  style={{
+    color: "var(--text-secondary)",
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.background =
+      "var(--card)";
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.background =
+      "transparent";
+  }}
+>
+             <FiEdit2
+  size={16}
+  style={{
+    color: "var(--text)",
+  }}
+/>
             </button>
           </div>
         ) : (

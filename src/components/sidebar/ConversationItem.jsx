@@ -38,61 +38,89 @@ function ConversationItem({
   };
 
   return (
-  <div
-  className={`group flex items-center justify-between rounded-xl mb-1 transition overflow-hidden
-  ${active ? "bg-zinc-800" : "hover:bg-zinc-800"}`}
->
-    <button
-  onClick={() => {
-  console.log("Selected:", chat.id);
-  onSelect();
-}}
-  className="flex items-center gap-3 flex-1 min-w-0 p-3 text-left"
->
-        <FiMessageSquare />
+    <div
+      className="group flex items-center justify-between rounded-xl mb-1 transition-all"
+      style={{
+        background: active
+          ? "var(--card)"
+          : "transparent",
+        border: active
+          ? "1px solid var(--border)"
+          : "1px solid transparent",
+      }}
+      onMouseEnter={(e) => {
+        if (!active) {
+          e.currentTarget.style.background =
+            "var(--card)";
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!active) {
+          e.currentTarget.style.background =
+            "transparent";
+        }
+      }}
+    >
+      <button
+        onClick={onSelect}
+        className="flex flex-1 min-w-0 items-center gap-3 p-3 text-left"
+      >
+        <FiMessageSquare
+          style={{
+            color: "var(--text-secondary)",
+          }}
+        />
 
         {editing ? (
           <input
             ref={inputRef}
             value={title}
             onClick={(e) => e.stopPropagation()}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) =>
+              setTitle(e.target.value)
+            }
             onBlur={saveTitle}
             onKeyDown={(e) => {
-              if (e.key === "Enter") {
+              if (e.key === "Enter")
                 saveTitle();
-              }
 
               if (e.key === "Escape") {
                 setTitle(chat.title);
                 setEditing(false);
               }
             }}
-            className="bg-transparent outline-none border-b border-zinc-500 flex-1 text-white"
+            className="flex-1 bg-transparent outline-none border-b"
+            style={{
+              color: "var(--text)",
+              borderColor: "var(--border)",
+            }}
           />
         ) : (
-       <span
-  onClick={(e) => e.stopPropagation()}
-  onDoubleClick={(e) => {
-    e.stopPropagation();
-    setEditing(true);
-  }}
-  className="flex-1 min-w-0 truncate cursor-text"
->
-  {chat.title}
-</span>
+          <span
+            onClick={(e) => e.stopPropagation()}
+            onDoubleClick={(e) => {
+              e.stopPropagation();
+              setEditing(true);
+            }}
+            className="flex-1 truncate cursor-text"
+            style={{
+              color: "var(--text)",
+            }}
+          >
+            {chat.title}
+          </span>
         )}
       </button>
 
-<div
-  className="opacity-0 group-hover:opacity-100 transition mr-2"
-  onClick={(e) => e.stopPropagation()}
->
-  <ChatMenu
-    onRename={() => setEditing(true)}
-    onDelete={onDelete}
-  />
-</div>
+      <div
+        className="mr-2 opacity-0 transition group-hover:opacity-100"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <ChatMenu
+          onRename={() => setEditing(true)}
+          onDelete={onDelete}
+        />
+      </div>
     </div>
   );
 }

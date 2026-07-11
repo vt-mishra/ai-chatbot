@@ -3,7 +3,6 @@ import {
   FiCheck,
   FiRefreshCw,
   FiDownload,
-  FiImage,
 } from "react-icons/fi";
 
 import { useState } from "react";
@@ -21,16 +20,28 @@ function MessageActions({
   const { regenerateResponse, streaming } =
     useChatContext();
 
-  const handleCopy = async () => {
-    if (!text) return;
-
-    await navigator.clipboard.writeText(text);
-
+  const showCopied = () => {
     setCopied(true);
 
     setTimeout(() => {
       setCopied(false);
     }, 2000);
+  };
+
+  const handleCopy = async () => {
+    if (!text) return;
+
+    await navigator.clipboard.writeText(text);
+
+    showCopied();
+  };
+
+  const copyPrompt = async () => {
+    if (!prompt) return;
+
+    await navigator.clipboard.writeText(prompt);
+
+    showCopied();
   };
 
   const downloadImage = () => {
@@ -46,46 +57,58 @@ function MessageActions({
     a.remove();
   };
 
-  const copyPrompt = async () => {
-    if (!prompt) return;
+  const buttonStyle = {
+    color: "var(--text)",
+  };
 
-    await navigator.clipboard.writeText(prompt);
+  const hoverIn = (e) => {
+    e.currentTarget.style.background = "var(--card)";
+  };
 
-    setCopied(true);
-
-    setTimeout(() => {
-      setCopied(false);
-    }, 2000);
+  const hoverOut = (e) => {
+    e.currentTarget.style.background = "transparent";
   };
 
   return (
-    <div className="mt-2 flex items-center gap-2 opacity-0 transition group-hover:opacity-100">
+    <div className="mt-2 flex items-center gap-2 opacity-0 transition-all duration-200 group-hover:opacity-100">
       {isImage ? (
         <>
-        {isImage && (
-  <>
-    <button
-      onClick={downloadImage}
-      className="p-2 rounded-lg hover:bg-zinc-700"
-      title="Download"
-    >
-      Download
-    </button>
-
-    <button
-      onClick={copyPrompt}
-      className="p-2 rounded-lg hover:bg-zinc-700"
-      title="Copy Prompt"
-    >
-      Copy Prompt
-    </button>
-  </>
-)}
+          <button
+            onClick={downloadImage}
+            className="rounded-lg px-3 py-2 transition"
+            style={buttonStyle}
+            onMouseEnter={hoverIn}
+            onMouseLeave={hoverOut}
+          >
+            <FiDownload className="inline mr-2" />
+            Download
+          </button>
 
           <button
-            onClick={() => regenerateResponse(messageId)}
+            onClick={copyPrompt}
+            className="rounded-lg px-3 py-2 transition"
+            style={buttonStyle}
+            onMouseEnter={hoverIn}
+            onMouseLeave={hoverOut}
+          >
+            {copied ? (
+              <FiCheck className="inline mr-2" />
+            ) : (
+              <FiCopy className="inline mr-2" />
+            )}
+
+            Copy Prompt
+          </button>
+
+          <button
+            onClick={() =>
+              regenerateResponse(messageId)
+            }
             disabled={streaming}
-            className="rounded-lg p-2 hover:bg-zinc-700 disabled:opacity-50"
+            className="rounded-lg p-2 transition disabled:opacity-50"
+            style={buttonStyle}
+            onMouseEnter={hoverIn}
+            onMouseLeave={hoverOut}
             title="Regenerate"
           >
             <FiRefreshCw />
@@ -95,16 +118,24 @@ function MessageActions({
         <>
           <button
             onClick={handleCopy}
-            className="rounded-lg p-2 hover:bg-zinc-700"
+            className="rounded-lg p-2 transition"
+            style={buttonStyle}
+            onMouseEnter={hoverIn}
+            onMouseLeave={hoverOut}
             title="Copy"
           >
             {copied ? <FiCheck /> : <FiCopy />}
           </button>
 
           <button
-            onClick={() => regenerateResponse(messageId)}
+            onClick={() =>
+              regenerateResponse(messageId)
+            }
             disabled={streaming}
-            className="rounded-lg p-2 hover:bg-zinc-700 disabled:opacity-50"
+            className="rounded-lg p-2 transition disabled:opacity-50"
+            style={buttonStyle}
+            onMouseEnter={hoverIn}
+            onMouseLeave={hoverOut}
             title="Regenerate"
           >
             <FiRefreshCw />

@@ -178,18 +178,23 @@ if (file.type.startsWith("image/")) {
 };
 
   return (
-    <div
-      className={`relative rounded-2xl p-5 transition-all ${
-        dragging
-          ? "ring-2 ring-blue-500 bg-zinc-900"
-          : ""
-      }`}
+   <div
+  className={`relative rounded-2xl p-5 transition-all ${
+    dragging ? "ring-2 ring-blue-500" : ""
+  }`}
+  style={{
+    background: "var(--header)",
+    border: "1px solid var(--border)",
+  }}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
       {dragging && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center rounded-2xl border-2 border-dashed border-blue-500 bg-black/70">
+        <div className="absolute inset-0 z-50 flex items-center justify-center rounded-2xl border-2 border-dashed border-blue-500"
+style={{
+  background: "rgba(0,0,0,.55)",
+}}>
           <div className="text-center">
             <FiImage
               size={52}
@@ -208,7 +213,12 @@ if (file.type.startsWith("image/")) {
       )}
 
       {editingMessageId && (
-        <div className="mb-2 flex items-center justify-between rounded-lg bg-zinc-800 px-4 py-2 text-sm text-zinc-300">
+        <div className="mb-2 flex items-center justify-between rounded-lg px-4 py-2 text-sm"
+style={{
+  background: "var(--card)",
+  color: "var(--text)",
+  border: "1px solid var(--border)",
+}}>
           <span>Editing message</span>
 
           <button
@@ -248,10 +258,19 @@ if (file.type.startsWith("image/")) {
   <button
     onClick={() => setMode("chat")}
     className={`rounded-full px-4 py-2 text-sm transition ${
-      mode === "chat"
-        ? "bg-blue-600 text-white"
-        : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+    mode === "chat"
+? "bg-blue-600 text-white"
+: ""
     }`}
+    style={
+  mode !== "chat"
+    ? {
+        background: "var(--card)",
+        color: "var(--text)",
+        border: "1px solid var(--border)",
+      }
+    : {}
+}
   >
     💬 Chat
   </button>
@@ -267,7 +286,13 @@ if (file.type.startsWith("image/")) {
     🎨 Image
   </button>
 </div>
-      <div className="flex items-center rounded-2xl bg-zinc-800 p-2">
+      <div
+  className="flex items-center rounded-2xl p-2"
+  style={{
+    background: "var(--card)",
+    border: "1px solid var(--border)",
+  }}
+>
         <input
           type="file"
           hidden
@@ -298,13 +323,10 @@ if (selected.type.startsWith("image/")) {
         <Menu as="div" className="relative mr-2">
 
   <Menu.Button
-    className="
-      rounded-full
-      p-3
-      text-white
-      hover:bg-zinc-700
-      transition
-    "
+ className="rounded-full p-3 transition"
+style={{
+  color: "var(--text)",
+}}
   >
     <FiPlus size={20} />
   </Menu.Button>
@@ -316,13 +338,15 @@ if (selected.type.startsWith("image/")) {
       left-0
       w-52
       rounded-xl
-      bg-zinc-900
       shadow-xl
       border
-      border-zinc-700
       overflow-hidden
       z-50
     "
+    style={{
+  background: "var(--card)",
+  border: "1px solid var(--border)",
+}}
   >
 
     <Menu.Item>
@@ -333,8 +357,14 @@ if (selected.type.startsWith("image/")) {
             fileInputRef.current.click();
           }}
           className={`flex w-full items-center gap-3 px-4 py-3 ${
-            active ? "bg-zinc-800" : ""
+            active ? "" : ""
           }`}
+          style={{
+  color: "var(--text)",
+  background: active
+    ? "var(--bg)"
+    : "transparent",
+}}
         >
           <FiImage />
           Upload Image
@@ -397,7 +427,10 @@ if (selected.type.startsWith("image/")) {
               handleSend();
             }
           }}
-          className="flex-1 bg-transparent px-3 py-2 text-white outline-none placeholder:text-zinc-400 disabled:opacity-60"
+          className="flex-1 bg-transparent px-3 py-2 outline-none disabled:opacity-60"
+style={{
+  color: "var(--text)",
+}}
         />
 <button
   onClick={toggleListening}
@@ -410,10 +443,13 @@ if (selected.type.startsWith("image/")) {
       transition
       ${
         listening
-          ? "bg-red-500 text-white"
-          : "text-zinc-300 hover:bg-zinc-700"
+          ? ""
+          : ""
       }
   `}
+  style={{
+  color: "var(--text)",
+}}
 >
   {listening ? (
     <>
@@ -426,7 +462,10 @@ if (selected.type.startsWith("image/")) {
 </button>
 <button
   onClick={() => setVoiceEnabled(!voiceEnabled)}
-  className="rounded-full p-3 hover:bg-zinc-700"
+  className="rounded-full p-3 transition"
+style={{
+  color: "var(--text)",
+}}
 >
   {voiceEnabled ? "🔊" : "🔇"}
 </button>
@@ -450,9 +489,9 @@ if (selected.type.startsWith("image/")) {
     !file
 }
             className={`rounded-full p-3 transition hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50 ${
-  mode === "image"
-    ? "bg-purple-600 text-white"
-    : "bg-white text-black"
+ mode === "image"
+? "bg-purple-600 text-white"
+: "bg-blue-600 text-white"
 }`}
           >
             <FiSend size={18} />

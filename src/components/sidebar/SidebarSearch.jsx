@@ -6,17 +6,29 @@ function SidebarSearch({
 }) {
   return (
     <div className="px-4 pb-4">
-      <div className="flex items-center bg-zinc-800 rounded-xl px-3">
-
-        <FiSearch className="text-zinc-400" />
+      <div
+        className="flex items-center rounded-xl px-3 transition"
+        style={{
+          background: "var(--card)",
+          border: "1px solid var(--border)",
+        }}
+      >
+        <FiSearch
+          size={18}
+          style={{
+            color: "var(--text-secondary)",
+          }}
+        />
 
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search chats..."
-          className="bg-transparent outline-none px-3 py-3 w-full text-sm"
+          className="w-full bg-transparent px-3 py-3 text-sm outline-none"
+          style={{
+            color: "var(--text)",
+          }}
         />
-
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState,React } from "react";
+import { useEffect, useRef, useState, React } from "react";
 import { FiArrowDown } from "react-icons/fi";
 
 import Header from "../layout/Header";
@@ -15,12 +15,9 @@ function ChatWindow() {
     loading,
     streaming,
     startEditingMessage,
-    currentChatId,
-    conversations,
   } = useChatContext();
 
   const scrollRef = useRef(null);
-
   const shouldAutoScroll = useRef(true);
 
   const [showScrollButton, setShowScrollButton] =
@@ -36,14 +33,13 @@ function ChatWindow() {
       behavior: smooth ? "smooth" : "auto",
     });
   };
-  // Auto-scroll only if user is already near bottom
+
   useEffect(() => {
     if (shouldAutoScroll.current) {
       scrollToBottom(false);
     }
   }, [messages]);
 
-  // Detect scroll position
   useEffect(() => {
     const container = scrollRef.current;
 
@@ -75,11 +71,15 @@ function ChatWindow() {
   }, []);
 
   return (
-    <main className="flex flex-1 flex-col min-h-0 bg-[#212121]">
+    <main
+      className="flex flex-1 min-h-0 flex-col transition-colors duration-300"
+      style={{
+        background: "var(--bg)",
+      }}
+    >
       <Header />
 
       <div className="relative flex-1 min-h-0">
-
         <div
           ref={scrollRef}
           className="absolute inset-0 overflow-y-auto p-6"
@@ -89,18 +89,18 @@ function ChatWindow() {
           ) : (
             <>
               {messages.map((message) => (
-      <Message
-  key={message.id}
-  messageId={message.id}
-  role={message.role}
-  text={message.text}
-  image={message.image}
-  type={message.type}
-  prompt={message.prompt}
-  fileName={message.fileName}
-  fileType={message.fileType}
-  onEdit={startEditingMessage}
-/>
+                <Message
+                  key={message.id}
+                  messageId={message.id}
+                  role={message.role}
+                  text={message.text}
+                  image={message.image}
+                  type={message.type}
+                  prompt={message.prompt}
+                  fileName={message.fileName}
+                  fileType={message.fileType}
+                  onEdit={startEditingMessage}
+                />
               ))}
 
               {loading && <TypingIndicator />}
@@ -111,19 +111,12 @@ function ChatWindow() {
         {showScrollButton && (
           <button
             onClick={() => scrollToBottom(true)}
-            className="
-              absolute
-              bottom-6
-              right-6
-              z-50
-              rounded-full
-              bg-zinc-700
-              p-3
-              text-white
-              shadow-xl
-              transition
-              hover:bg-zinc-600
-            "
+            className="absolute bottom-6 right-6 z-50 rounded-full p-3 shadow-xl transition hover:scale-110"
+            style={{
+              background: "var(--card)",
+              color: "var(--text)",
+              border: "1px solid var(--border)",
+            }}
           >
             <FiArrowDown size={20} />
           </button>

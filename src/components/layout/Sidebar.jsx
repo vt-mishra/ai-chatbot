@@ -11,16 +11,23 @@ function Sidebar() {
 
   const [search, setSearch] = useState("");
 
-const filteredChats = useMemo(() => {
-  return conversations.filter((chat) =>
-    (chat?.title ?? "")
-      .toLowerCase()
-      .includes((search ?? "").toLowerCase())
-  );
-}, [conversations, search]);
+  const filteredChats = useMemo(() => {
+    return conversations.filter((chat) =>
+      (chat?.title ?? "")
+        .toLowerCase()
+        .includes((search ?? "").toLowerCase())
+    );
+  }, [conversations, search]);
 
   return (
-<aside className="w-72 min-w-72 h-screen overflow-hidden bg-[#171717] border-r border-zinc-800 flex flex-col">
+    <aside
+      className="w-72 min-w-72 h-screen overflow-hidden flex flex-col"
+      style={{
+        background: "var(--sidebar)",
+        borderRight: "1px solid var(--border)",
+        color: "var(--text)",
+      }}
+    >
       <SidebarHeader />
 
       <SidebarSearch
@@ -28,9 +35,9 @@ const filteredChats = useMemo(() => {
         setSearch={setSearch}
       />
 
-  <div className="flex-1 overflow-y-auto">
-  <ConversationList chats={filteredChats} />
-</div>
+      <div className="flex-1 overflow-y-auto">
+        <ConversationList chats={filteredChats} />
+      </div>
 
       <SidebarFooter />
     </aside>
