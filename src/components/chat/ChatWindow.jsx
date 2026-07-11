@@ -1,9 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState,React } from "react";
+import { FiArrowDown } from "react-icons/fi";
+
 import Header from "../layout/Header";
 import ChatInput from "./ChatInput";
 import Message from "./Message";
 import EmptyState from "./EmptyState";
 import TypingIndicator from "./TypingIndicator";
+
 import { useChatContext } from "../../context/ChatContext";
 
 function ChatWindow() {
@@ -11,47 +14,123 @@ function ChatWindow() {
     messages,
     loading,
     streaming,
-    sendMessage,
+    startEditingMessage,
+    currentChatId,
+    conversations,
   } = useChatContext();
 
-  const bottomRef = useRef(null);
+  const scrollRef = useRef(null);
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "end",
+  const shouldAutoScroll = useRef(true);
+
+  const [showScrollButton, setShowScrollButton] =
+    useState(false);
+
+  const scrollToBottom = (smooth = true) => {
+    const container = scrollRef.current;
+
+    if (!container) return;
+
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior: smooth ? "smooth" : "auto",
     });
-  }, [messages, loading, streaming]);
+  };
+  // Auto-scroll only if user is already near bottom
+  useEffect(() => {
+    if (shouldAutoScroll.current) {
+      scrollToBottom(false);
+    }
+  }, [messages]);
+
+  // Detect scroll position
+  useEffect(() => {
+    const container = scrollRef.current;
+
+    if (!container) return;
+
+    const handleScroll = () => {
+      const distance =
+        container.scrollHeight -
+        container.scrollTop -
+        container.clientHeight;
+
+      shouldAutoScroll.current = distance < 150;
+
+      setShowScrollButton(distance > 250);
+    };
+
+    container.addEventListener(
+      "scroll",
+      handleScroll
+    );
+
+    handleScroll();
+
+    return () =>
+      container.removeEventListener(
+        "scroll",
+        handleScroll
+      );
+  }, []);
 
   return (
-    <main className="flex flex-1 flex-col bg-[#212121]">
+    <main className="flex flex-1 flex-col min-h-0 bg-[#212121]">
       <Header />
 
-      <div className="flex-1 overflow-y-auto p-6">
-        {messages.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <>
-            {messages.map((message, index) => (
-              <Message
-                key={message.id ?? index}
-                role={message.role}
-                text={message.text}
-              />
-            ))}
+      <div className="relative flex-1 min-h-0">
 
-            {loading && <TypingIndicator />}
+        <div
+          ref={scrollRef}
+          className="absolute inset-0 overflow-y-auto p-6"
+        >
+          {messages.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <>
+              {messages.map((message) => (
+      <Message
+  key={message.id}
+  messageId={message.id}
+  role={message.role}
+  text={message.text}
+  image={message.image}
+  type={message.type}
+  prompt={message.prompt}
+  fileName={message.fileName}
+  fileType={message.fileType}
+  onEdit={startEditingMessage}
+/>
+              ))}
 
-            <div ref={bottomRef} />
-          </>
+              {loading && <TypingIndicator />}
+            </>
+          )}
+        </div>
+
+        {showScrollButton && (
+          <button
+            onClick={() => scrollToBottom(true)}
+            className="
+              absolute
+              bottom-6
+              right-6
+              z-50
+              rounded-full
+              bg-zinc-700
+              p-3
+              text-white
+              shadow-xl
+              transition
+              hover:bg-zinc-600
+            "
+          >
+            <FiArrowDown size={20} />
+          </button>
         )}
       </div>
 
-      <ChatInput
-        sendMessage={sendMessage}
-        loading={loading}
-        streaming={streaming}
-      />
+      <ChatInput />
     </main>
   );
 }

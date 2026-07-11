@@ -7,3 +7,14 @@ body {
   color: white;
   font-family: Inter, system-ui, sans-serif;
 }
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+*:hover::-webkit-scrollbar-thumb {
+  background: #52525b;
+}
