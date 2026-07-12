@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { FiMessageSquare } from "react-icons/fi";
+import {
+  FiMessageSquare,
+} from "react-icons/fi";
+import { LuPin } from "react-icons/lu";
 import ChatMenu from "./ChatMenu";
 
 function ConversationItem({
@@ -8,6 +11,7 @@ function ConversationItem({
   onSelect,
   onDelete,
   onRename,
+  onTogglePin,
 }) {
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState(chat.title);
@@ -63,13 +67,20 @@ function ConversationItem({
     >
       <button
         onClick={onSelect}
-        className="flex flex-1 min-w-0 items-center gap-3 p-3 text-left"
+        className="flex flex-1 items-center gap-3 min-w-0 p-3 text-left"
       >
         <FiMessageSquare
           style={{
             color: "var(--text-secondary)",
           }}
         />
+
+        {chat.pinned && (
+          <LuPin
+            size={14}
+            className="text-yellow-500 shrink-0"
+          />
+        )}
 
         {editing ? (
           <input
@@ -81,15 +92,14 @@ function ConversationItem({
             }
             onBlur={saveTitle}
             onKeyDown={(e) => {
-              if (e.key === "Enter")
-                saveTitle();
+              if (e.key === "Enter") saveTitle();
 
               if (e.key === "Escape") {
                 setTitle(chat.title);
                 setEditing(false);
               }
             }}
-            className="flex-1 bg-transparent outline-none border-b"
+            className="flex-1 bg-transparent border-b outline-none"
             style={{
               color: "var(--text)",
               borderColor: "var(--border)",
@@ -113,13 +123,36 @@ function ConversationItem({
       </button>
 
       <div
-        className="mr-2 opacity-0 transition group-hover:opacity-100"
+        className="flex items-center opacity-0 group-hover:opacity-100 transition mr-2"
         onClick={(e) => e.stopPropagation()}
       >
-        <ChatMenu
-          onRename={() => setEditing(true)}
-          onDelete={onDelete}
-        />
+        <button
+          onClick={onTogglePin}
+          title={
+            chat.pinned
+              ? "Unpin Chat"
+              : "Pin Chat"
+          }
+          className={`mr-1 rounded-lg p-2 transition ${
+            chat.pinned
+              ? "text-yellow-500"
+              : ""
+          }`}
+          style={{
+            color: chat.pinned
+              ? "#eab308"
+              : "var(--text-secondary)",
+          }}
+        >
+          <LuPin size={15} />
+        </button>
+
+      <ChatMenu
+  onRename={() => setEditing(true)}
+  onDelete={onDelete}
+  onTogglePin={onTogglePin}
+  pinned={chat.pinned}
+/>
       </div>
     </div>
   );

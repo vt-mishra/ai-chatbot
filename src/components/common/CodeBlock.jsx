@@ -6,6 +6,7 @@ import {
   oneDark,
   oneLight,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
+import toast from "react-hot-toast";
 
 function CodeBlock({ language, children }) {
   const [copied, setCopied] = useState(false);
@@ -16,7 +17,9 @@ function CodeBlock({ language, children }) {
   const handleCopy = async () => {
     await navigator.clipboard.writeText(children);
 
-    setCopied(true);
+   setCopied(true);
+
+toast.success("Copied to clipboard");
 
     setTimeout(() => {
       setCopied(false);

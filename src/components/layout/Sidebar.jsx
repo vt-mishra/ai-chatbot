@@ -11,13 +11,19 @@ function Sidebar() {
 
   const [search, setSearch] = useState("");
 
-  const filteredChats = useMemo(() => {
-    return conversations.filter((chat) =>
-      (chat?.title ?? "")
+const filteredChats = useMemo(() => {
+  return conversations
+    .filter((chat) =>
+      (chat.title ?? "")
         .toLowerCase()
-        .includes((search ?? "").toLowerCase())
-    );
-  }, [conversations, search]);
+        .includes(search.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (a.pinned === b.pinned) return 0;
+
+      return a.pinned ? -1 : 1;
+    });
+}, [conversations, search]);
 
   return (
     <aside

@@ -19,6 +19,18 @@ function Message({
 }) {
   const isUser = role === "user";
 
+  const bubbleStyle = {
+  background: isUser ? "var(--user)" : "var(--assistant)",
+  color: isUser ? "#fff" : "var(--text)",
+  border: isUser ? "none" : "1px solid var(--border)",
+  boxShadow: "0 8px 24px rgba(0,0,0,.08)",
+};
+
+const actionStyle = {
+  color: "var(--text)",
+  border: "1px solid var(--border)",
+  background: "transparent",
+};
   // ==========================
   // AI Image Message
   // ==========================
@@ -31,16 +43,12 @@ function Message({
   alt={prompt}
   onClick={() => window.open(image, "_blank")}
   className="max-w-xl cursor-pointer rounded-2xl border transition hover:opacity-90"
-  style={{
-    borderColor: "var(--border)",
-  }}
+style={bubbleStyle}
 />
 
          <p
   className="mt-2 text-sm"
-  style={{
-    color: "var(--text-secondary)",
-  }}
+  style={bubbleStyle}
 >
             {prompt}
           </p>
@@ -65,15 +73,7 @@ function Message({
       <div className="max-w-4xl">
      <div
   className="rounded-2xl px-5 py-4 shadow-sm transition-colors duration-300"
-  style={{
-    background: isUser
-      ? "var(--user-message)"
-      : "var(--assistant-message)",
-    color: "var(--text)",
-    border: isUser
-      ? "none"
-      : "1px solid var(--border)",
-  }}
+style={bubbleStyle}
 >
           {isUser ? (
             <>
@@ -83,19 +83,14 @@ function Message({
   src={image}
   alt="uploaded"
   className="max-h-80 w-full rounded-xl border object-cover"
-  style={{
-    borderColor: "var(--border)",
-  }}
+style={bubbleStyle}
 />
                 </div>
               )}
 {fileName && (
    <div
   className="mb-3 rounded-xl p-3"
-  style={{
-    background: "var(--card)",
-    border: "1px solid var(--border)",
-  }}
+style={bubbleStyle}
 >
         📄 {fileName}
     </div>
@@ -103,10 +98,7 @@ function Message({
 {fileName && (
 <div
   className="mb-3 flex items-center gap-3 rounded-xl p-3"
-  style={{
-    background: "var(--card)",
-    border: "1px solid var(--border)",
-  }}
+style={bubbleStyle}
 >
     <span className="text-2xl">📄</span>
 
@@ -114,9 +106,7 @@ function Message({
       <div className="font-medium">{fileName}</div>
    <div
   className="text-xs"
-  style={{
-    color: "var(--text-secondary)",
-  }}
+style={bubbleStyle}
 >
         {fileType}
       </div>
@@ -139,9 +129,7 @@ function Message({
   src={src}
   alt={alt}
   className="my-3 max-h-96 rounded-xl border"
-  style={{
-    borderColor: "var(--border)",
-  }}
+style={bubbleStyle}
 />
                   );
                 },
@@ -162,11 +150,7 @@ function Message({
                   return (
                    <code
   className="rounded px-1 py-0.5"
-  style={{
-    background: "var(--card)",
-    color: "var(--text)",
-    border: "1px solid var(--border)",
-  }}
+style={bubbleStyle}
 >
   {children}
 </code>
@@ -184,10 +168,8 @@ function Message({
           <button
   onClick={() => onEdit?.(messageId)}
   title="Edit Prompt"
-  className="rounded-lg p-2 transition"
-  style={{
-    color: "var(--text-secondary)",
-  }}
+ className="rounded-lg p-2 transition hover:opacity-80"
+style={bubbleStyle}
   onMouseEnter={(e) => {
     e.currentTarget.style.background =
       "var(--card)";
@@ -199,9 +181,7 @@ function Message({
 >
              <FiEdit2
   size={16}
-  style={{
-    color: "var(--text)",
-  }}
+style={actionStyle}
 />
             </button>
           </div>

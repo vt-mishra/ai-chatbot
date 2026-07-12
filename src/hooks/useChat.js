@@ -70,11 +70,12 @@ const [voiceEnabled, setVoiceEnabled] = useState(true);
   const messages = currentConversation?.messages ?? [];
 
   const newChat = () => {
-    const chat = {
-      id: crypto.randomUUID(),
-      title: "New Chat",
-      messages: [],
-    };
+   const chat = {
+  id: crypto.randomUUID(),
+  title: "New Chat",
+  messages: [],
+  pinned: false,
+};
 
     setConversations((prev) => [chat, ...prev]);
     setCurrentChatId(chat.id);
@@ -120,8 +121,21 @@ const renameChat = (id, title) => {
         : chat
     )
   );
+  toast.success("Chat renamed");
 };
 
+const togglePin = (id) => {
+  setConversations((prev) =>
+    prev.map((chat) =>
+      chat.id === id
+        ? {
+            ...chat,
+            pinned: !chat.pinned,
+          }
+        : chat
+    )
+  );
+};
   const selectChat = (id) => {
     setCurrentChatId(id);
   };
@@ -663,6 +677,21 @@ finally {
 }
 };
 
+const clearAllChats = () => {
+const chat = {
+  id: crypto.randomUUID(),
+  title: "New Chat",
+  messages: [],
+  pinned: false,
+};
+
+  setConversations([chat]);
+
+  setCurrentChatId(chat.id);
+
+  localStorage.removeItem("conversations");
+};
+
 return {
   conversations,
   currentChatId,
@@ -687,8 +716,9 @@ return {
   newChat,
   selectChat,
   deleteChat,
+   clearAllChats,
   renameChat,
   voiceEnabled,
-
+  togglePin,
 };
 }

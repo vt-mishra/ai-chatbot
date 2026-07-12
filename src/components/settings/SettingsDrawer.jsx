@@ -17,31 +17,60 @@ import {
   downloadPDF,
   downloadMarkdown,
 } from "../../utils/exportChat";
+import Swal from "sweetalert2";
 
 function SettingsDrawer({ open, onClose }) {
   const { theme, setTheme } = useThemeContext();
 
   const isDark = theme === "dark";
 
-  const drawerStyle = {
-    background: isDark ? "#202123" : "#ffffff",
-    color: isDark ? "#ffffff" : "#111827",
-    borderColor: isDark ? "#3f3f46" : "#e5e7eb",
-  };
+const drawerStyle = {
+  background: "var(--sidebar)",
+  color: "var(--text)",
+  borderColor: "var(--border)",
+  boxShadow: "0 0 40px rgba(0,255,255,.08)",
+};
 
-  const cardStyle = {
-    background: isDark ? "#27272a" : "#f3f4f6",
-    color: isDark ? "#ffffff" : "#111827",
-  };
+const cardStyle = {
+  background: "var(--card)",
+  color: "var(--text)",
+  border: "1px solid var(--border)",
+  boxShadow: "0 0 18px rgba(0,255,255,.08)",
+};
 
+const activeButtonStyle = {
+  background: "linear-gradient(135deg,#00F5FF,#8B5CF6)",
+  color: "#fff",
+  boxShadow: "0 0 25px rgba(0,255,255,.45)",
+};
+
+const handleHover = (e) => {
+  e.currentTarget.style.transform = "translateY(-2px)";
+  e.currentTarget.style.boxShadow =
+    "0 0 25px rgba(0,255,255,.35)";
+};
+
+const handleLeave = (e) => {
+  e.currentTarget.style.transform = "translateY(0)";
+
+  if (
+    e.currentTarget.dataset.active === "true"
+  ) {
+    e.currentTarget.style.boxShadow =
+      "0 0 25px rgba(0,255,255,.45)";
+  } else {
+    e.currentTarget.style.boxShadow = "";
+  }
+};
   const headingStyle = {
     color: isDark ? "#a1a1aa" : "#6b7280",
   };
 
   const {
-    voiceEnabled,
-    setVoiceEnabled,
-    messages,
+     voiceEnabled,
+  setVoiceEnabled,
+  messages,
+  clearAllChats,
   } = useChatContext();
 
   return (
@@ -96,6 +125,8 @@ ${open ? "translate-x-0" : "translate-x-full"}
             style={{
               color: drawerStyle.color,
             }}
+              onMouseEnter={handleHover}
+    onMouseLeave={handleLeave}
           >
             <FiX />
           </button>
@@ -121,46 +152,58 @@ ${open ? "translate-x-0" : "translate-x-full"}
             <div className="space-y-2">
 
               <button
-                onClick={() => setTheme("dark")}
-                className={`flex w-full items-center justify-between rounded-xl p-3 transition ${
-                  theme === "dark" ? "bg-blue-600" : ""
-                }`}
-                style={theme === "dark" ? {} : cardStyle}
-              >
-                <span className="flex items-center gap-3">
-                  <FiMoon />
-                  Dark
-                </span>
+  onClick={() => setTheme("dark")}
+  data-active={theme === "dark"}
+  className="flex w-full items-center justify-between rounded-xl p-3 transition-all duration-300"
+  style={
+    theme === "dark"
+      ? activeButtonStyle
+      : cardStyle
+  }
+  onMouseEnter={handleHover}
+  onMouseLeave={handleLeave}
+>
+  <span className="flex items-center gap-3">
+    <FiMoon />
+    Dark
+  </span>
 
-                {theme === "dark" && "✓"}
-              </button>
+  {theme === "dark" && "✓"}
+</button>
 
-              <button
-                onClick={() => setTheme("light")}
-                className={`flex w-full items-center justify-between rounded-xl p-3 transition ${
-                  theme === "light" ? "bg-blue-600" : ""
-                }`}
-                style={theme === "light" ? {} : cardStyle}
-              >
-                <span className="flex items-center gap-3">
-                  <FiSun />
-                  Light
-                </span>
+           <button
+  onClick={() => setTheme("light")}
+  data-active={theme === "light"}
+  className="flex w-full items-center justify-between rounded-xl p-3 transition-all duration-300"
+  style={
+    theme === "light"
+      ? activeButtonStyle
+      : cardStyle
+  }
+  onMouseEnter={handleHover}
+  onMouseLeave={handleLeave}
+>
+  <span className="flex items-center gap-3">
+    <FiSun />
+    Light
+  </span>
 
-                {theme === "light" && "✓"}
-              </button>
+  {theme === "light" && "✓"}
+</button>
 
-              <button
-                className="flex w-full items-center justify-between rounded-xl p-3 transition"
-                style={cardStyle}
-              >
-                <span className="flex items-center gap-3">
-                  <FiMonitor />
-                  System
-                </span>
+             <button
+  className="flex w-full items-center justify-between rounded-xl p-3 transition-all duration-300"
+  style={cardStyle}
+  onMouseEnter={handleHover}
+  onMouseLeave={handleLeave}
+>
+  <span className="flex items-center gap-3">
+    <FiMonitor />
+    System
+  </span>
 
-                Coming Soon
-              </button>
+  Coming Soon
+</button>
 
             </div>
 
@@ -183,6 +226,8 @@ ${open ? "translate-x-0" : "translate-x-full"}
               }
               className="flex w-full items-center justify-between rounded-xl p-3 transition"
               style={cardStyle}
+                onMouseEnter={handleHover}
+    onMouseLeave={handleLeave}
             >
               <span className="flex items-center gap-3">
                 <FiVolume2 />
@@ -211,6 +256,8 @@ ${open ? "translate-x-0" : "translate-x-full"}
             <button
               className="flex w-full items-center justify-between rounded-xl p-3 transition"
               style={cardStyle}
+                onMouseEnter={handleHover}
+    onMouseLeave={handleLeave}
             >
               <span className="flex items-center gap-3">
                 <FiZap />
@@ -239,6 +286,8 @@ ${open ? "translate-x-0" : "translate-x-full"}
                 onClick={() => downloadPDF(messages)}
                 className="flex w-full items-center justify-between rounded-xl p-3 transition"
                 style={cardStyle}
+                  onMouseEnter={handleHover}
+    onMouseLeave={handleLeave}
               >
                 <span className="flex items-center gap-3">
                   <FiDownload />
@@ -250,6 +299,8 @@ ${open ? "translate-x-0" : "translate-x-full"}
                 onClick={() => downloadMarkdown(messages)}
                 className="flex w-full items-center justify-between rounded-xl p-3 transition"
                 style={cardStyle}
+                  onMouseEnter={handleHover}
+    onMouseLeave={handleLeave}
               >
                 <span className="flex items-center gap-3">
                   <FiFileText />
@@ -272,8 +323,62 @@ ${open ? "translate-x-0" : "translate-x-full"}
               Data
             </h3>
 
-            <button
-              className="
+<button
+  onClick={async () => {
+    const result = await Swal.fire({
+      title: "Clear all chats?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+
+      showCancelButton: true,
+
+      confirmButtonText: "Delete",
+
+      cancelButtonText: "Cancel",
+
+      confirmButtonColor: "#dc2626",
+
+      cancelButtonColor: "#3f3f46",
+
+      background: theme === "dark"
+        ? "#202123"
+        : "#ffffff",
+
+      color:
+        theme === "dark"
+          ? "#ffffff"
+          : "#111827",
+    });
+
+    if (!result.isConfirmed) return;
+
+    clearAllChats();
+
+    onClose();
+
+    Swal.fire({
+      icon: "success",
+
+      title: "Deleted",
+
+      text: "All chats have been removed.",
+
+      timer: 1500,
+
+      showConfirmButton: false,
+
+      background:
+        theme === "dark"
+          ? "#202123"
+          : "#ffffff",
+
+      color:
+        theme === "dark"
+          ? "#ffffff"
+          : "#111827",
+    });
+  }}
+  className="
 w-full
 rounded-xl
 bg-red-600
@@ -285,12 +390,13 @@ items-center
 justify-center
 gap-2
 "
-            >
-              <FiTrash2 />
+  onMouseEnter={handleHover}
+    onMouseLeave={handleLeave}
+>
+  <FiTrash2 />
 
-              Clear All Chats
-
-            </button>
+  Clear All Chats
+</button>
 
           </div>
 

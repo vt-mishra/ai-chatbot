@@ -8,6 +8,8 @@ import EmptyState from "./EmptyState";
 import TypingIndicator from "./TypingIndicator";
 
 import { useChatContext } from "../../context/ChatContext";
+import ConversationSearch from "./ConversationSearch";
+import useConversationSearch from "../../hooks/useConversationSearch";
 
 function ChatWindow() {
   const {
@@ -39,6 +41,7 @@ function ChatWindow() {
       scrollToBottom(false);
     }
   }, [messages]);
+  const search = useConversationSearch(messages);
 
   useEffect(() => {
     const container = scrollRef.current;
@@ -78,7 +81,16 @@ function ChatWindow() {
       }}
     >
       <Header />
-
+<ConversationSearch
+  open={search.open}
+  query={search.query}
+  setQuery={search.setQuery}
+  current={search.currentIndex}
+  total={search.matches.length}
+  onNext={search.next}
+  onPrev={search.prev}
+  onClose={() => search.setOpen(false)}
+/>  
       <div className="relative flex-1 min-h-0">
         <div
           ref={scrollRef}

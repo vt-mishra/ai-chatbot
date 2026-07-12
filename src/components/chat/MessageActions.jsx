@@ -7,7 +7,7 @@ import {
 
 import { useState } from "react";
 import { useChatContext } from "../../context/ChatContext";
-
+import toast from "react-hot-toast";
 function MessageActions({
   text,
   image,
@@ -22,7 +22,7 @@ function MessageActions({
 
   const showCopied = () => {
     setCopied(true);
-
+toast.success("Copied to clipboard");
     setTimeout(() => {
       setCopied(false);
     }, 2000);
@@ -55,6 +55,7 @@ function MessageActions({
     document.body.appendChild(a);
     a.click();
     a.remove();
+    toast.success("Image downloaded");
   };
 
   const buttonStyle = {

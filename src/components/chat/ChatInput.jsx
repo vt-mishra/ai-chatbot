@@ -7,7 +7,9 @@ import {
   FiImage,
   FiFileText,
   FiMic,
-  FiMicOff
+  FiMicOff,
+  FiVolume2,
+  FiVolumeX,
 } from "react-icons/fi";
 import { Menu } from "@headlessui/react";
 import { useChatContext } from "../../context/ChatContext";
@@ -322,74 +324,99 @@ if (selected.type.startsWith("image/")) {
 {mode === "chat" && (
         <Menu as="div" className="relative mr-2">
 
-  <Menu.Button
- className="rounded-full p-3 transition"
-style={{
-  color: "var(--text)",
-}}
-  >
-    <FiPlus size={20} />
-  </Menu.Button>
+<Menu.Button
+  className="
+    rounded-xl
+    p-3
+    transition-all
+    duration-300
+  "
+  style={{
+    background: "rgba(255,255,255,.03)",
+    border: "1px solid rgba(0,245,255,.12)",
+    color: "#E5E7EB",
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.background =
+      "linear-gradient(135deg,#00F5FF22,#8B5CF622)";
+    e.currentTarget.style.boxShadow =
+      "0 0 18px rgba(0,245,255,.25)";
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.background =
+      "rgba(255,255,255,.03)";
+    e.currentTarget.style.boxShadow = "none";
+  }}
+>
+  <FiPlus size={20} />
+</Menu.Button>
 
-  <Menu.Items
-    className="
-      absolute
-      bottom-14
-      left-0
-      w-52
-      rounded-xl
-      shadow-xl
-      border
-      overflow-hidden
-      z-50
-    "
-    style={{
-  background: "var(--card)",
-  border: "1px solid var(--border)",
-}}
-  >
+<Menu.Items
+  className="
+    absolute
+    bottom-14
+    left-0
+    z-50
+    w-60
+    overflow-hidden
+    rounded-2xl
+    border
+    p-2
+    backdrop-blur-xl
+    animate-in
+    fade-in
+    zoom-in-95
+  "
+  style={{
+    background: "rgba(20,24,38,.92)",
+    borderColor: "rgba(0,245,255,.15)",
+    boxShadow:
+      "0 12px 35px rgba(0,0,0,.45),0 0 18px rgba(0,245,255,.08)",
+  }}
+>
 
-    <Menu.Item>
-      {({ active }) => (
-        <button
-          onClick={() => {
-            fileInputRef.current.accept = "image/*";
-            fileInputRef.current.click();
-          }}
-          className={`flex w-full items-center gap-3 px-4 py-3 ${
-            active ? "" : ""
-          }`}
-          style={{
-  color: "var(--text)",
-  background: active
-    ? "var(--bg)"
-    : "transparent",
-}}
-        >
-          <FiImage />
-          Upload Image
-        </button>
-      )}
-    </Menu.Item>
+<Menu.Item>
+  {({ active }) => (
+    <button
+      onClick={() => {
+        fileInputRef.current.accept = "image/*";
+        fileInputRef.current.click();
+      }}
+      className="flex w-full items-center gap-3 rounded-xl px-4 py-3 transition"
+      style={{
+        background: active
+          ? "linear-gradient(135deg,rgba(0,245,255,.15),rgba(139,92,246,.15))"
+          : "transparent",
+        color: active ? "#00F5FF" : "#E5E7EB",
+      }}
+    >
+      <FiImage size={18} />
+      Upload Image
+    </button>
+  )}
+</Menu.Item>
 
-    <Menu.Item>
-      {({ active }) => (
-        <button
-          onClick={() => {
-            fileInputRef.current.accept =
-              ".pdf,.doc,.docx,.txt,.csv";
-
-            fileInputRef.current.click();
-          }}
-          className={`flex w-full items-center gap-3 px-4 py-3 ${
-            active ? "bg-zinc-800" : ""
-          }`}
-        >
-          <FiFileText />
-          Upload Document
-        </button>
-      )}
-    </Menu.Item>
+  <Menu.Item>
+  {({ active }) => (
+    <button
+      onClick={() => {
+        fileInputRef.current.accept =
+          ".pdf,.doc,.docx,.txt,.csv";
+        fileInputRef.current.click();
+      }}
+      className="flex w-full items-center gap-3 rounded-xl px-4 py-3 transition"
+      style={{
+        background: active
+          ? "linear-gradient(135deg,rgba(0,245,255,.15),rgba(139,92,246,.15))"
+          : "transparent",
+        color: active ? "#00F5FF" : "#E5E7EB",
+      }}
+    >
+      <FiFileText size={18} />
+      Upload Document
+    </button>
+  )}
+</Menu.Item>
 
   </Menu.Items>
 
@@ -435,67 +462,88 @@ style={{
 <button
   onClick={toggleListening}
   title={listening ? "Stop Listening" : "Voice Input"}
-  className={`
-      relative
-      mr-2
-      rounded-full
-      p-3
-      transition
-      ${
-        listening
-          ? ""
-          : ""
-      }
-  `}
+  className="relative mr-2 rounded-xl p-3 transition-all duration-300"
   style={{
-  color: "var(--text)",
-}}
+    background: listening
+      ? "linear-gradient(135deg,#ef4444,#dc2626)"
+      : "rgba(255,255,255,.03)",
+    color: "#fff",
+    border: listening
+      ? "none"
+      : "1px solid rgba(0,245,255,.15)",
+    boxShadow: listening
+      ? "0 0 20px rgba(239,68,68,.45)"
+      : "0 0 12px rgba(0,245,255,.08)",
+  }}
 >
+  {listening && (
+    <span className="absolute inset-0 rounded-xl animate-ping bg-red-500 opacity-30" />
+  )}
+
   {listening ? (
-    <>
-      <span className="absolute inset-0 animate-ping rounded-full bg-red-500 opacity-50"></span>
-      <FiMicOff className="relative" size={18} />
-    </>
+    <FiMicOff className="relative z-10" size={18} />
   ) : (
-    <FiMic size={18} />
+    <FiMic className="relative z-10" size={18} />
   )}
 </button>
 <button
   onClick={() => setVoiceEnabled(!voiceEnabled)}
-  className="rounded-full p-3 transition"
-style={{
-  color: "var(--text)",
-}}
+  title="Voice Replies"
+  className="mr-2 rounded-xl p-3 transition-all duration-300"
+  style={{
+    background: voiceEnabled
+      ? "linear-gradient(135deg,#00F5FF,#8B5CF6)"
+      : "rgba(255,255,255,.03)",
+    color: "#fff",
+    border: voiceEnabled
+      ? "none"
+      : "1px solid rgba(0,245,255,.15)",
+    boxShadow: voiceEnabled
+      ? "0 0 18px rgba(0,245,255,.35)"
+      : "0 0 12px rgba(0,245,255,.08)",
+  }}
 >
-  {voiceEnabled ? "🔊" : "🔇"}
+  {voiceEnabled ? (
+    <FiVolume2 size={18} />
+  ) : (
+    <FiVolumeX size={18} />
+  )}
 </button>
         {loading || streaming ? (
-          <button
-            onClick={() => {
+         <button
+  onClick={() => {
     stopGeneration();
     stopSpeaking();
-}}
-            title="Stop generating"
-            className="rounded-full bg-red-500 p-3 text-white transition hover:bg-red-600 active:scale-95"
-          >
-            <FiSquare size={18} />
-          </button>
+  }}
+  title="Stop generating"
+  className="rounded-xl p-3 transition-all duration-300 hover:scale-105"
+  style={{
+    background: "linear-gradient(135deg,#ef4444,#dc2626)",
+    color: "#fff",
+    boxShadow: "0 0 18px rgba(239,68,68,.35)",
+  }}
+>
+  <FiSquare size={18} />
+</button>
         ) : (
           <button
-            onClick={handleSend}
-            disabled={
-    !text.trim() &&
-    !image &&
-    !file
-}
-            className={`rounded-full p-3 transition hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50 ${
- mode === "image"
-? "bg-purple-600 text-white"
-: "bg-blue-600 text-white"
-}`}
-          >
-            <FiSend size={18} />
-          </button>
+  onClick={handleSend}
+  disabled={!text.trim() && !image && !file}
+  className="rounded-xl p-3 transition-all duration-300 hover:scale-105 disabled:opacity-40 disabled:cursor-not-allowed"
+  style={{
+    background:
+      mode === "image"
+        ? "linear-gradient(135deg,#8B5CF6,#EC4899)"
+        : "linear-gradient(135deg,#00F5FF,#2563EB)",
+    color: "#fff",
+    boxShadow:
+      mode === "image"
+        ? "0 0 20px rgba(139,92,246,.45)"
+        : "0 0 20px rgba(0,245,255,.35)",
+  }}
+>
+  <FiSend size={18} />
+</button>
         )}
       </div>
     </div>

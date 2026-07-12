@@ -54,6 +54,7 @@ export function downloadPDF(messages) {
   });
 
   doc.save("chat-export.pdf");
+  toast.success("PDF exported");
 }
 
 export function downloadMarkdown(messages) {
@@ -111,4 +112,5 @@ ${message.text || ""}
   a.click();
 
   URL.revokeObjectURL(url);
+  toast.success("Markdown exported");
 }

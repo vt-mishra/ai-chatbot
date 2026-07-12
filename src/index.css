@@ -1,39 +1,53 @@
 @import "tailwindcss";
 
 /* ==========================
-   THEME VARIABLES
+   NEON AI THEME
 ========================== */
 
 :root {
-  --bg: #ffffff;
-  --sidebar: #f8f8f8;
+  /* Layout */
+  --bg: #f8fafc;
+  --sidebar: #eef6ff;
   --header: #ffffff;
   --card: #ffffff;
-  --input: #f3f4f6;
+  --input: #ffffff;
 
-  --text: #111827;
-  --text-secondary: #6b7280;
+  /* Text */
+  --text: #0f172a;
+  --text-secondary: #64748b;
 
-  --border: #e5e7eb;
+  /* Border */
+  --border: #dbeafe;
 
-  --assistant: #f3f4f6;
-  --user: #2563eb;
+  /* Chat */
+  --assistant: #e0f2fe;
+  --user: #0ea5e9;
+
+  /* Accent */
+  --accent: #7c3aed;
 }
 
 html.dark {
-  --bg: #212121;
-  --sidebar: #171717;
-  --header: #202020;
-  --card: #2b2b2b;
-  --input: #2b2b2b;
+  /* Layout */
+  --bg: #0b1120;
+  --sidebar: #111827;
+  --header: #111827;
+  --card: #182234;
+  --input: #16213e;
 
-  --text: #ffffff;
-  --text-secondary: #a1a1aa;
+  /* Text */
+  --text: #f8fafc;
+  --text-secondary: #94a3b8;
 
-  --border: #3f3f46;
+  /* Border */
+  --border: #273549;
 
-  --assistant: #2b2b2b;
-  --user: #2563eb;
+  /* Chat */
+  --assistant: #1e293b;
+  --user: #7c3aed;
+
+  /* Accent */
+  --accent: #22d3ee;
 }
 
 /* ==========================
@@ -42,34 +56,120 @@ html.dark {
 
 html,
 body,
-#root {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background: var(--bg);
-  color: var(--text);
-  font-family: Inter, system-ui, sans-serif;
-  transition:
-    background .25s ease,
-    color .25s ease;
+#root{
+    height:100%;
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:Inter,system-ui,sans-serif;
+    transition:.25s;
 }
 
-/* ==========================
-   Scrollbar
-========================== */
-
-::-webkit-scrollbar {
-  width: 4px;
+input,
+textarea{
+    color:var(--text);
 }
 
-::-webkit-scrollbar-thumb {
-  background: transparent;
-}
-
-*:hover::-webkit-scrollbar-thumb {
-  background: #52525b;
-}
 input::placeholder,
-textarea::placeholder {
-  color: var(--text-secondary);
+textarea::placeholder{
+    color:var(--text-secondary);
+}
+
+::-webkit-scrollbar{
+    width:4px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:transparent;
+}
+
+*:hover::-webkit-scrollbar-thumb{
+    background:#475569;
+}
+/* Menu Button */
+
+.chat-menu-button{
+    border:none;
+    outline:none;
+    cursor:pointer;
+    border-radius:12px;
+    padding:8px;
+    background:transparent;
+    color:var(--text-secondary);
+    transition:.25s;
+}
+
+.chat-menu-button:hover{
+    background:rgba(0,245,255,.12);
+    color:#00F5FF;
+}
+
+/* Popup */
+
+.szh-menu{
+    background:rgba(20,24,38,.95)!important;
+    backdrop-filter:blur(18px);
+    border:1px solid rgba(0,245,255,.15)!important;
+    border-radius:16px!important;
+    padding:8px!important;
+    min-width:190px;
+    box-shadow:
+        0 12px 35px rgba(0,0,0,.45),
+        0 0 18px rgba(0,245,255,.08);
+}
+
+/* Items */
+
+.chat-menu-item{
+    display:flex!important;
+    align-items:center;
+    gap:12px;
+
+    padding:12px 14px!important;
+    margin:2px 0;
+
+    border-radius:12px!important;
+
+    transition:.25s;
+
+    color:#ECECEC!important;
+}
+
+.chat-menu-item svg{
+    font-size:17px;
+}
+
+/* Hover */
+
+.chat-menu-item:hover{
+    background:linear-gradient(
+        135deg,
+        rgba(0,245,255,.15),
+        rgba(139,92,246,.15)
+    )!important;
+
+    color:#00F5FF!important;
+}
+
+/* Rename */
+
+.rename-item svg{
+    color:#00F5FF;
+}
+
+/* Pin */
+
+.pin-item svg{
+    color:#FFD54A;
+}
+
+/* Delete */
+
+.delete-item svg{
+    color:#ff5b6b;
+}
+
+.delete-item:hover{
+    background:rgba(255,70,70,.15)!important;
+    color:#ff6b6b!important;
 }

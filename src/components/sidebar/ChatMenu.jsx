@@ -10,28 +10,45 @@ import {
   FiEdit2,
   FiTrash2,
 } from "react-icons/fi";
+import { LuPin } from "react-icons/lu";
 
 function ChatMenu({
   onRename,
   onDelete,
+  onTogglePin,
+  pinned,
 }) {
   return (
     <Menu
+      transition
       menuButton={
-        <MenuButton className="p-2 rounded-lg hover:bg-zinc-700 text-zinc-400">
-          <FiMoreVertical />
+        <MenuButton className="chat-menu-button">
+          <FiMoreVertical size={18} />
         </MenuButton>
       }
-      transition
     >
-      <MenuItem onClick={onRename}>
-        <FiEdit2 className="mr-2" />
-        Rename
+      <MenuItem
+        className="chat-menu-item rename-item"
+        onClick={onRename}
+      >
+        <FiEdit2 />
+        <span>Rename</span>
       </MenuItem>
 
-      <MenuItem onClick={onDelete}>
-        <FiTrash2 className="mr-2 text-red-500" />
-        Delete
+      <MenuItem
+        className="chat-menu-item pin-item"
+        onClick={onTogglePin}
+      >
+        <LuPin />
+        <span>{pinned ? "Unpin Chat" : "Pin Chat"}</span>
+      </MenuItem>
+
+      <MenuItem
+        className="chat-menu-item delete-item"
+        onClick={onDelete}
+      >
+        <FiTrash2 />
+        <span>Delete</span>
       </MenuItem>
     </Menu>
   );
