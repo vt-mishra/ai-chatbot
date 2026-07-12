@@ -6,34 +6,42 @@ import {
   FiVolume2,
   FiTrash2,
   FiZap,
+  FiDownload,
+  FiFileText,
 } from "react-icons/fi";
 
 import { useThemeContext } from "../../context/ThemeContext";
 import { useChatContext } from "../../context/ChatContext";
+
+import {
+  downloadPDF,
+  downloadMarkdown,
+} from "../../utils/exportChat";
 
 function SettingsDrawer({ open, onClose }) {
   const { theme, setTheme } = useThemeContext();
 
   const isDark = theme === "dark";
 
-const drawerStyle = {
-  background: isDark ? "#202123" : "#ffffff",
-  color: isDark ? "#ffffff" : "#111827",
-  borderColor: isDark ? "#3f3f46" : "#e5e7eb",
-};
+  const drawerStyle = {
+    background: isDark ? "#202123" : "#ffffff",
+    color: isDark ? "#ffffff" : "#111827",
+    borderColor: isDark ? "#3f3f46" : "#e5e7eb",
+  };
 
-const cardStyle = {
-  background: isDark ? "#27272a" : "#f3f4f6",
-  color: isDark ? "#ffffff" : "#111827",
-};
+  const cardStyle = {
+    background: isDark ? "#27272a" : "#f3f4f6",
+    color: isDark ? "#ffffff" : "#111827",
+  };
 
-const headingStyle = {
-  color: isDark ? "#a1a1aa" : "#6b7280",
-};
+  const headingStyle = {
+    color: isDark ? "#a1a1aa" : "#6b7280",
+  };
 
   const {
     voiceEnabled,
     setVoiceEnabled,
+    messages,
   } = useChatContext();
 
   return (
@@ -62,47 +70,52 @@ z-50
 h-screen
 w-96
 border-l
+flex
+flex-col
 transition-transform
 duration-300
 ${open ? "translate-x-0" : "translate-x-full"}
-`}style={drawerStyle}
+`}
+        style={drawerStyle}
       >
         {/* Header */}
 
-        <div className="flex items-center justify-between border-b p-5"
-style={{
-  borderColor: drawerStyle.borderColor,
-}}>
-
+      <div
+  className="flex items-center justify-between border-b p-5 flex-shrink-0"
+  style={{
+    borderColor: drawerStyle.borderColor,
+  }}
+>
           <h2 className="text-xl font-semibold">
             Settings
           </h2>
 
           <button
             onClick={onClose}
-           className="rounded-lg p-2 transition"
-style={{
-  color: drawerStyle.color,
-}}
+            className="rounded-lg p-2 transition"
+            style={{
+              color: drawerStyle.color,
+            }}
           >
             <FiX />
           </button>
-
         </div>
 
         {/* Body */}
 
-        <div className="space-y-8 p-6">
+        <div
+  className="flex-1 overflow-y-auto p-6 space-y-8"
+>
 
-          {/* ======================= */}
+          {/* Appearance */}
 
           <div>
 
-            <h3 className="mb-4 text-sm uppercase tracking-wide"
-style={headingStyle}> 
-
+            <h3
+              className="mb-4 text-sm uppercase tracking-wide"
+              style={headingStyle}
+            >
               Appearance
-
             </h3>
 
             <div className="space-y-2">
@@ -110,15 +123,9 @@ style={headingStyle}>
               <button
                 onClick={() => setTheme("dark")}
                 className={`flex w-full items-center justify-between rounded-xl p-3 transition ${
-                  theme === "dark"
-                    ? "bg-blue-600"
-                    : ""
+                  theme === "dark" ? "bg-blue-600" : ""
                 }`}
-                style={
-  theme === "dark"
-    ? {}
-    : cardStyle
-}
+                style={theme === "dark" ? {} : cardStyle}
               >
                 <span className="flex items-center gap-3">
                   <FiMoon />
@@ -131,10 +138,9 @@ style={headingStyle}>
               <button
                 onClick={() => setTheme("light")}
                 className={`flex w-full items-center justify-between rounded-xl p-3 transition ${
-                  theme === "light"
-                    ? "bg-blue-600"
-                    : "bg-zinc-800 hover:bg-zinc-700"
+                  theme === "light" ? "bg-blue-600" : ""
                 }`}
+                style={theme === "light" ? {} : cardStyle}
               >
                 <span className="flex items-center gap-3">
                   <FiSun />
@@ -146,7 +152,7 @@ style={headingStyle}>
 
               <button
                 className="flex w-full items-center justify-between rounded-xl p-3 transition"
-style={cardStyle}
+                style={cardStyle}
               >
                 <span className="flex items-center gap-3">
                   <FiMonitor />
@@ -160,59 +166,55 @@ style={cardStyle}
 
           </div>
 
-          {/* ======================= */}
+          {/* Voice */}
 
           <div>
 
-            <h3 className="mb-4 text-sm uppercase tracking-wide"style={headingStyle}>
-
+            <h3
+              className="mb-4 text-sm uppercase tracking-wide"
+              style={headingStyle}
+            >
               Voice
-
             </h3>
 
             <button
               onClick={() =>
                 setVoiceEnabled(!voiceEnabled)
               }
-              className="flex w-full items-center justify-between rounded-xl"
+              className="flex w-full items-center justify-between rounded-xl p-3 transition"
+              style={cardStyle}
             >
               <span className="flex items-center gap-3">
-
                 <FiVolume2 />
-
                 Voice Replies
-
               </span>
 
               <span>
-
                 {voiceEnabled ? "ON" : "OFF"}
-
               </span>
 
             </button>
 
           </div>
 
-          {/* ======================= */}
+          {/* AI */}
 
           <div>
 
-            <h3 className="mb-4 text-sm uppercase tracking-wide" style={headingStyle}>
-
+            <h3
+              className="mb-4 text-sm uppercase tracking-wide"
+              style={headingStyle}
+            >
               AI
-
             </h3>
 
             <button
-              className="flex w-full items-center justify-between rounded-xl"style={cardStyle}
+              className="flex w-full items-center justify-between rounded-xl p-3 transition"
+              style={cardStyle}
             >
               <span className="flex items-center gap-3">
-
                 <FiZap />
-
                 Typing Speed
-
               </span>
 
               Fast
@@ -220,14 +222,54 @@ style={cardStyle}
 
           </div>
 
-          {/* ======================= */}
+          {/* Export */}
 
           <div>
 
-            <h3 className="mb-4 text-sm uppercase tracking-wide" style={headingStyle}>
+            <h3
+              className="mb-4 text-sm uppercase tracking-wide"
+              style={headingStyle}
+            >
+              Export
+            </h3>
 
+            <div className="space-y-2">
+
+              <button
+                onClick={() => downloadPDF(messages)}
+                className="flex w-full items-center justify-between rounded-xl p-3 transition"
+                style={cardStyle}
+              >
+                <span className="flex items-center gap-3">
+                  <FiDownload />
+                  Export PDF
+                </span>
+              </button>
+
+              <button
+                onClick={() => downloadMarkdown(messages)}
+                className="flex w-full items-center justify-between rounded-xl p-3 transition"
+                style={cardStyle}
+              >
+                <span className="flex items-center gap-3">
+                  <FiFileText />
+                  Export Markdown
+                </span>
+              </button>
+
+            </div>
+
+          </div>
+
+          {/* Data */}
+
+          <div>
+
+            <h3
+              className="mb-4 text-sm uppercase tracking-wide"
+              style={headingStyle}
+            >
               Data
-
             </h3>
 
             <button
@@ -252,17 +294,17 @@ gap-2
 
           </div>
 
-          {/* ======================= */}
+          {/* Footer */}
 
-          <div className="pt-5 text-center text-xs"
-style={headingStyle}>
-
+          <div
+            className="pt-5 text-center text-xs"
+            style={headingStyle}
+          >
             V/S Chatbot
 
             <br />
 
             Version 2.0
-
           </div>
 
         </div>
