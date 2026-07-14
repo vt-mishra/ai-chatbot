@@ -44,6 +44,7 @@ const recognitionRef = useRef(null);
   const fileInputRef = useRef(null);
 const [mode, setMode] = useState("chat");
 
+
 useEffect(() => {
   const SpeechRecognition =
     window.SpeechRecognition ||
@@ -56,13 +57,12 @@ useEffect(() => {
 
   const recognition = new SpeechRecognition();
 
-  recognition.lang = "en-IN";
+recognition.lang = "hi-IN";
 
-  recognition.continuous = true;
+recognition.continuous = false;
+recognition.interimResults = true;
+recognition.maxAlternatives = 1;
 
-  recognition.interimResults = true;
-
-  recognition.maxAlternatives = 1;
 
   recognition.onstart = () => {
     setListening(true);
@@ -76,19 +76,19 @@ useEffect(() => {
     setListening(false);
   };
 
-  recognition.onresult = (event) => {
-    let transcript = "";
+recognition.onresult = (event) => {
+  let transcript = "";
 
-    for (
-      let i = event.resultIndex;
-      i < event.results.length;
-      i++
-    ) {
-      transcript += event.results[i][0].transcript;
-    }
+  for (let i = event.resultIndex; i < event.results.length; i++) {
+    transcript += event.results[i][0].transcript;
+  }
 
-    setText(transcript);
-  };
+  setText(transcript.trim());
+};
+
+recognition.onend = () => {
+  setListening(false);
+};
 
   recognitionRef.current = recognition;
 }, []);
@@ -181,7 +181,7 @@ if (file.type.startsWith("image/")) {
 
   return (
    <div
-  className={`relative rounded-2xl p-5 transition-all ${
+ className={`relative rounded-t-2xl p-3 sm:p-5 transition-all ${
     dragging ? "ring-2 ring-blue-500" : ""
   }`}
   style={{
@@ -256,7 +256,7 @@ style={{
     }}
 />
 
-<div className="mb-3 flex gap-2">
+<div className="mb-3 flex flex-wrap gap-2">
   <button
     onClick={() => setMode("chat")}
     className={`rounded-full px-4 py-2 text-sm transition ${
@@ -289,7 +289,14 @@ style={{
   </button>
 </div>
       <div
-  className="flex items-center rounded-2xl p-2"
+  className="
+flex
+items-center
+gap-1
+rounded-2xl
+p-2
+sm:gap-2
+"
   style={{
     background: "var(--card)",
     border: "1px solid var(--border)",
@@ -334,7 +341,6 @@ if (selected.type.startsWith("image/")) {
   style={{
     background: "rgba(255,255,255,.03)",
     border: "1px solid rgba(0,245,255,.12)",
-    color: "#E5E7EB",
   }}
   onMouseEnter={(e) => {
     e.currentTarget.style.background =
@@ -357,7 +363,8 @@ if (selected.type.startsWith("image/")) {
     bottom-14
     left-0
     z-50
-    w-60
+   w-52 
+   sm:w-60
     overflow-hidden
     rounded-2xl
     border
@@ -404,7 +411,7 @@ if (selected.type.startsWith("image/")) {
           ".pdf,.doc,.docx,.txt,.csv";
         fileInputRef.current.click();
       }}
-      className="flex w-full items-center gap-3 rounded-xl px-4 py-3 transition"
+      className="flex w-full items-center gap-3 rounded-xl px-4 py-3 transition whitespace-nowrap"
       style={{
         background: active
           ? "linear-gradient(135deg,rgba(0,245,255,.15),rgba(139,92,246,.15))"
@@ -454,7 +461,18 @@ if (selected.type.startsWith("image/")) {
               handleSend();
             }
           }}
-          className="flex-1 bg-transparent px-3 py-2 outline-none disabled:opacity-60"
+          className="
+flex-1
+min-w-0
+bg-transparent
+px-2
+sm:px-3
+py-2
+text-sm
+sm:text-base
+outline-none
+disabled:opacity-60
+"
 style={{
   color: "var(--text)",
 }}
@@ -462,11 +480,18 @@ style={{
 <button
   onClick={toggleListening}
   title={listening ? "Stop Listening" : "Voice Input"}
-  className="relative mr-2 rounded-xl p-3 transition-all duration-300"
+  className="
+relative
+rounded-xl
+p-2
+sm:p-3
+transition-all
+duration-300
+"
   style={{
     background: listening
       ? "linear-gradient(135deg,#ef4444,#dc2626)"
-      : "rgba(255,255,255,.03)",
+      : "linear-gradient(135deg, rgb(0, 245, 255), rgb(139, 92, 246))",
     color: "#fff",
     border: listening
       ? "none"
@@ -489,11 +514,17 @@ style={{
 <button
   onClick={() => setVoiceEnabled(!voiceEnabled)}
   title="Voice Replies"
-  className="mr-2 rounded-xl p-3 transition-all duration-300"
+  className="
+rounded-xl
+p-2
+sm:p-3
+transition-all
+duration-300
+"
   style={{
     background: voiceEnabled
       ? "linear-gradient(135deg,#00F5FF,#8B5CF6)"
-      : "rgba(255,255,255,.03)",
+      : "linear-gradient(135deg, rgb(0, 245, 255), rgb(139, 92, 246))",
     color: "#fff",
     border: voiceEnabled
       ? "none"
@@ -516,7 +547,11 @@ style={{
     stopSpeaking();
   }}
   title="Stop generating"
-  className="rounded-xl p-3 transition-all duration-300 hover:scale-105"
+  className="rounded-xl
+p-2
+sm:p-3
+transition-all
+duration-300transition-all duration-300 hover:scale-105"
   style={{
     background: "linear-gradient(135deg,#ef4444,#dc2626)",
     color: "#fff",
@@ -529,7 +564,11 @@ style={{
           <button
   onClick={handleSend}
   disabled={!text.trim() && !image && !file}
-  className="rounded-xl p-3 transition-all duration-300 hover:scale-105 disabled:opacity-40 disabled:cursor-not-allowed"
+  className="rounded-xl
+p-2
+sm:p-3
+transition-all
+duration-300 hover:scale-105 disabled:opacity-40 disabled:cursor-not-allowed"
   style={{
     background:
       mode === "image"

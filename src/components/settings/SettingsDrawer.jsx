@@ -8,6 +8,12 @@ import {
   FiZap,
   FiDownload,
   FiFileText,
+  FiCpu,
+  FiCode,
+  FiUser,
+  FiGithub,
+  FiLinkedin,
+  FiGlobe,
 } from "react-icons/fi";
 
 import { useThemeContext } from "../../context/ThemeContext";
@@ -97,7 +103,9 @@ right-0
 top-0
 z-50
 h-screen
-w-96
+w-full
+max-w-sm
+sm:w-96
 border-l
 flex
 flex-col
@@ -110,14 +118,32 @@ ${open ? "translate-x-0" : "translate-x-full"}
         {/* Header */}
 
       <div
-  className="flex items-center justify-between border-b p-5 flex-shrink-0"
+  className="
+flex
+items-center
+justify-between
+border-b
+px-4
+py-4
+sm:p-5
+shrink-0
+"
   style={{
     borderColor: drawerStyle.borderColor,
   }}
 >
-          <h2 className="text-xl font-semibold">
-            Settings
-          </h2>
+      <div>
+  <h2 className="text-xl font-bold">
+    ⚙ Settings
+  </h2>
+
+  <p
+    className="text-xs"
+    style={{ color: "var(--text-secondary)" }}
+  >
+    Customize your AI experience
+  </p>
+</div>
 
           <button
             onClick={onClose}
@@ -135,7 +161,15 @@ ${open ? "translate-x-0" : "translate-x-full"}
         {/* Body */}
 
         <div
-  className="flex-1 overflow-y-auto p-6 space-y-8"
+  className="
+flex-1
+overflow-y-auto
+px-4
+py-5
+space-y-6
+sm:p-6
+sm:space-y-8
+"
 >
 
           {/* Appearance */}
@@ -143,7 +177,14 @@ ${open ? "translate-x-0" : "translate-x-full"}
           <div>
 
             <h3
-              className="mb-4 text-sm uppercase tracking-wide"
+      className="
+mb-3
+text-xs
+font-semibold
+uppercase
+tracking-[0.18em]
+sm:text-sm
+"
               style={headingStyle}
             >
               Appearance
@@ -154,7 +195,10 @@ ${open ? "translate-x-0" : "translate-x-full"}
               <button
   onClick={() => setTheme("dark")}
   data-active={theme === "dark"}
-  className="flex w-full items-center justify-between rounded-xl p-3 transition-all duration-300"
+  className="flex w-full items-center justify-between rounded-xl
+p-3
+sm:p-3
+min-h-[52px]transition-all duration-300"
   style={
     theme === "dark"
       ? activeButtonStyle
@@ -381,8 +425,9 @@ ${open ? "translate-x-0" : "translate-x-full"}
   className="
 w-full
 rounded-xl
+p-2
+sm:p-3
 bg-red-600
-p-3
 transition
 hover:bg-red-700
 flex
@@ -402,16 +447,66 @@ gap-2
 
           {/* Footer */}
 
-          <div
-            className="pt-5 text-center text-xs"
-            style={headingStyle}
-          >
-            V/S Chatbot
+<div
+  className="pt-6 border-t text-center"
+  style={{
+    borderColor: "var(--border)",
+    color: "var(--text-secondary)",
+  }}
+>
+  <div className="flex items-center justify-center gap-2 text-sm font-semibold">
+    <FiCpu size={16} style={{ color: "#22d3ee" }} />
+    <span>V/S AI v2.0</span>
+  </div>
 
-            <br />
+  <div className="mt-3 flex items-center justify-center gap-2 text-xs">
+    <FiCode size={14} style={{ color: "#8b5cf6" }} />
+    <span>Designed & Developed by</span>
+  </div>
 
-            Version 2.0
-          </div>
+  <div
+    className="mt-1 flex items-center justify-center gap-2 text-sm font-semibold"
+    style={{ color: "var(--text)" }}
+  >
+    <FiUser size={14} style={{ color: "#00F5FF" }} />
+    <span>Vatan Mishra</span>
+  </div>
+
+  <div className="mt-4 flex items-center justify-center gap-5">
+    <a
+      href="https://github.com/vt-mishra"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="social-link"
+      style={{ color: "var(--text-secondary)" }}
+      title="GitHub"
+    >
+      <FiGithub size={18} />
+    </a>
+
+    <a
+      href="https://linkedin.com/in/vatan-mishra-1961b61a4"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="social-link"
+      style={{ color: "var(--text-secondary)" }}
+      title="LinkedIn"
+    >
+      <FiLinkedin size={18} />
+    </a>
+
+    <a
+      href="https://yourportfolio.com"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="social-link"
+      style={{ color: "var(--text-secondary)" }}
+      title="Portfolio"
+    >
+      <FiGlobe size={18} />
+    </a>
+  </div>
+</div>
 
         </div>
       </div>

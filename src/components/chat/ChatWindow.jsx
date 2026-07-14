@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, React } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FiArrowDown } from "react-icons/fi";
 
 import Header from "../layout/Header";
@@ -11,7 +11,7 @@ import { useChatContext } from "../../context/ChatContext";
 import ConversationSearch from "./ConversationSearch";
 import useConversationSearch from "../../hooks/useConversationSearch";
 
-function ChatWindow() {
+function ChatWindow({ onOpenSidebar }) {
   const {
     messages,
     loading,
@@ -41,6 +41,7 @@ function ChatWindow() {
       scrollToBottom(false);
     }
   }, [messages]);
+
   const search = useConversationSearch(messages);
 
   useEffect(() => {
@@ -75,26 +76,46 @@ function ChatWindow() {
 
   return (
     <main
-      className="flex flex-1 min-h-0 flex-col transition-colors duration-300"
+      className="
+        flex
+        flex-1
+        min-h-0
+        w-full
+        flex-col
+        transition-colors
+        duration-300
+      "
       style={{
         background: "var(--bg)",
       }}
     >
-      <Header />
-<ConversationSearch
-  open={search.open}
-  query={search.query}
-  setQuery={search.setQuery}
-  current={search.currentIndex}
-  total={search.matches.length}
-  onNext={search.next}
-  onPrev={search.prev}
-  onClose={() => search.setOpen(false)}
-/>  
+     <Header onOpenSidebar={onOpenSidebar} />
+
+      <ConversationSearch
+        open={search.open}
+        query={search.query}
+        setQuery={search.setQuery}
+        current={search.currentIndex}
+        total={search.matches.length}
+        onNext={search.next}
+        onPrev={search.prev}
+        onClose={() => search.setOpen(false)}
+      />
+
       <div className="relative flex-1 min-h-0">
         <div
           ref={scrollRef}
-          className="absolute inset-0 overflow-y-auto p-6"
+className="
+absolute
+inset-0
+overflow-y-auto
+px-3
+py-4
+pb-32
+sm:px-6
+sm:py-6
+sm:pb-40
+"
         >
           {messages.length === 0 ? (
             <EmptyState />
@@ -123,7 +144,19 @@ function ChatWindow() {
         {showScrollButton && (
           <button
             onClick={() => scrollToBottom(true)}
-            className="absolute bottom-6 right-6 z-50 rounded-full p-3 shadow-xl transition hover:scale-110"
+            className="
+              absolute
+             bottom-28
+right-3
+sm:bottom-8
+sm:right-8
+              z-50
+              rounded-full
+              p-3
+              shadow-xl
+              transition
+              hover:scale-110
+            "
             style={{
               background: "var(--card)",
               color: "var(--text)",

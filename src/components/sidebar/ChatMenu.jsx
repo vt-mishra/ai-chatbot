@@ -18,36 +18,119 @@ function ChatMenu({
   onTogglePin,
   pinned,
 }) {
+  const menuStyle = {
+    background: "var(--card)",
+    color: "var(--text)",
+    border: "1px solid var(--border)",
+    borderRadius: "16px",
+    overflow: "hidden",
+    minWidth: "190px",
+    padding: "6px",
+    boxShadow:
+      "0 12px 35px rgba(0,255,255,.12)",
+    zIndex: 9999,
+  };
+  const itemStyle = {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    padding: "12px 14px",
+    borderRadius: "12px",
+    cursor: "pointer",
+    fontSize: "14px",
+    transition: "all .2s ease",
+    color: "var(--text)",
+  };
+
+  const hover = (e) => {
+    e.currentTarget.style.background =
+      "linear-gradient(135deg,#00F5FF22,#8B5CF622)";
+    e.currentTarget.style.boxShadow =
+      "0 0 15px rgba(0,255,255,.18)";
+    e.currentTarget.style.transform =
+      "translateX(2px)";
+  };
+
+  const leave = (e) => {
+    e.currentTarget.style.background =
+      "transparent";
+    e.currentTarget.style.boxShadow = "none";
+    e.currentTarget.style.transform =
+      "translateX(0)";
+  };
+
   return (
     <Menu
       transition
+      align="end"
+      direction="bottom"
+      arrow={false}
+      menuStyle={menuStyle}
       menuButton={
-        <MenuButton className="chat-menu-button">
+        <MenuButton
+          className="rounded-lg p-2 transition"
+          style={{
+            color: "var(--text-secondary)",
+            background: "transparent",
+            border: "none",
+          }}
+        >
           <FiMoreVertical size={18} />
         </MenuButton>
       }
     >
       <MenuItem
-        className="chat-menu-item rename-item"
         onClick={onRename}
+        style={itemStyle}
+        onMouseEnter={hover}
+        onMouseLeave={leave}
       >
-        <FiEdit2 />
+        <FiEdit2 size={16} />
         <span>Rename</span>
       </MenuItem>
 
       <MenuItem
-        className="chat-menu-item pin-item"
         onClick={onTogglePin}
+        style={itemStyle}
+        onMouseEnter={hover}
+        onMouseLeave={leave}
       >
-        <LuPin />
-        <span>{pinned ? "Unpin Chat" : "Pin Chat"}</span>
+        <LuPin
+          size={16}
+          color={
+            pinned
+              ? "#facc15"
+              : "currentColor"
+          }
+        />
+
+        <span>
+          {pinned
+            ? "Unpin Chat"
+            : "Pin Chat"}
+        </span>
       </MenuItem>
 
       <MenuItem
-        className="chat-menu-item delete-item"
         onClick={onDelete}
+        style={{
+          ...itemStyle,
+          color: "#ef4444",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background =
+            "rgba(239,68,68,.12)";
+          e.currentTarget.style.transform =
+            "translateX(2px)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background =
+            "transparent";
+          e.currentTarget.style.transform =
+            "translateX(0)";
+        }}
       >
-        <FiTrash2 />
+        <FiTrash2 size={16} />
         <span>Delete</span>
       </MenuItem>
     </Menu>

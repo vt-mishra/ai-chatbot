@@ -107,7 +107,7 @@ textarea::placeholder{
 /* Popup */
 
 .szh-menu{
-    background:rgba(20,24,38,.95)!important;
+    background:rgba(20,24,38,.95);
     backdrop-filter:blur(18px);
     border:1px solid rgba(0,245,255,.15)!important;
     border-radius:16px!important;
@@ -172,4 +172,14 @@ textarea::placeholder{
 .delete-item:hover{
     background:rgba(255,70,70,.15)!important;
     color:#ff6b6b!important;
+}
+
+.social-link{
+  transition: all .25s ease;
+}
+
+.social-link:hover{
+  color:#00F5FF !important;
+  transform: translateY(-2px) scale(1.15);
+  filter: drop-shadow(0 0 10px #00F5FF);
 }
