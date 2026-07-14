@@ -20,8 +20,13 @@ export default defineConfig({
       includeAssets: [
         "robots.txt",
       ],
-
+workbox: {
+  maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+},
       manifest: {
+         id: "/",
+         start_url: "/",
+
         name: "V/S AI",
         short_name: "V/S AI",
 
