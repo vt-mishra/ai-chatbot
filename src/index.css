@@ -25,6 +25,17 @@
 
   /* Accent */
   --accent: #7c3aed;
+
+  /* Menu */
+  --menu-bg: #ffffff;
+  --menu-border: #d1d5db;
+  --menu-hover: linear-gradient(
+    135deg,
+    rgba(37,99,235,.10),
+    rgba(14,165,233,.12)
+  );
+ --menu-shadow:
+    0 10px 30px rgba(15,23,42,.10);
 }
 
 html.dark {
@@ -48,6 +59,20 @@ html.dark {
 
   /* Accent */
   --accent: #22d3ee;
+
+  /* Menu */
+  --menu-bg: rgba(20, 24, 38, .95);
+  --menu-border: rgba(0,245,255,.15);
+
+  --menu-hover: linear-gradient(
+    135deg,
+    rgba(0,245,255,.15),
+    rgba(139,92,246,.15)
+  );
+
+--menu-shadow:
+    0 12px 35px rgba(0,0,0,.45),
+    0 0 18px rgba(0,245,255,.08);
 }
 
 /* ==========================
@@ -56,130 +81,130 @@ html.dark {
 
 html,
 body,
-#root{
-    height:100%;
-    margin:0;
-    background:var(--bg);
-    color:var(--text);
-    font-family:Inter,system-ui,sans-serif;
-    transition:.25s;
+#root {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, sans-serif;
+  transition: .25s;
 }
 
 input,
-textarea{
-    color:var(--text);
+textarea {
+  color: var(--text);
 }
 
 input::placeholder,
-textarea::placeholder{
-    color:var(--text-secondary);
+textarea::placeholder {
+  color: var(--text-secondary);
 }
 
-::-webkit-scrollbar{
-    width:4px;
+::-webkit-scrollbar {
+  width: 4px;
 }
 
-::-webkit-scrollbar-thumb{
-    background:transparent;
+::-webkit-scrollbar-thumb {
+  background: transparent;
 }
 
-*:hover::-webkit-scrollbar-thumb{
-    background:#475569;
-}
-/* Menu Button */
-
-.chat-menu-button{
-    border:none;
-    outline:none;
-    cursor:pointer;
-    border-radius:12px;
-    padding:8px;
-    background:transparent;
-    color:var(--text-secondary);
-    transition:.25s;
+*:hover::-webkit-scrollbar-thumb {
+  background: #475569;
 }
 
-.chat-menu-button:hover{
-    background:rgba(0,245,255,.12);
-    color:#00F5FF;
+/* ==========================
+   MENU BUTTON
+========================== */
+
+.chat-menu-button {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  border-radius: 12px;
+  padding: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  transition: .25s;
 }
 
-/* Popup */
-
-.szh-menu{
-    background:rgba(20,24,38,.95);
-    backdrop-filter:blur(18px);
-    border:1px solid rgba(0,245,255,.15)!important;
-    border-radius:16px!important;
-    padding:8px!important;
-    min-width:190px;
-    box-shadow:
-        0 12px 35px rgba(0,0,0,.45),
-        0 0 18px rgba(0,245,255,.08);
+.chat-menu-button:hover {
+  background: var(--menu-hover);
+  color: var(--accent);
 }
 
-/* Items */
+/* ==========================
+   POPUP MENU
+========================== */
 
-.chat-menu-item{
-    display:flex!important;
-    align-items:center;
-    gap:12px;
-
-    padding:12px 14px!important;
-    margin:2px 0;
-
-    border-radius:12px!important;
-
-    transition:.25s;
-
-    color:#ECECEC!important;
+.szh-menu {
+  background: var(--menu-bg) !important;
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--menu-border) !important;
+  border-radius: 16px !important;
+  padding: 8px !important;
+  min-width: 190px;
+  box-shadow: var(--menu-shadow);
 }
 
-.chat-menu-item svg{
-    font-size:17px;
+/* ==========================
+   MENU ITEMS
+========================== */
+
+.chat-menu-item {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px 14px !important;
+  margin: 2px 0;
+
+  border-radius: 12px !important;
+
+  transition: .25s;
+
+  color: var(--text) !important;
 }
 
-/* Hover */
-
-.chat-menu-item:hover{
-    background:linear-gradient(
-        135deg,
-        rgba(0,245,255,.15),
-        rgba(139,92,246,.15)
-    )!important;
-
-    color:#00F5FF!important;
+.chat-menu-item svg {
+  font-size: 17px;
 }
 
-/* Rename */
-
-.rename-item svg{
-    color:#00F5FF;
+.chat-menu-item:hover {
+  background: var(--menu-hover) !important;
+  color: var(--accent) !important;
 }
 
-/* Pin */
+/* ==========================
+   MENU ICON COLORS
+========================== */
 
-.pin-item svg{
-    color:#FFD54A;
+.rename-item svg {
+  color: var(--accent);
 }
 
-/* Delete */
-
-.delete-item svg{
-    color:#ff5b6b;
+.pin-item svg {
+  color: #FFD54A;
 }
 
-.delete-item:hover{
-    background:rgba(255,70,70,.15)!important;
-    color:#ff6b6b!important;
+.delete-item svg {
+  color: #ff5b6b;
 }
 
-.social-link{
+.delete-item:hover {
+  background: rgba(255,70,70,.15) !important;
+  color: #ff6b6b !important;
+}
+
+/* ==========================
+   SOCIAL LINKS
+========================== */
+
+.social-link {
   transition: all .25s ease;
 }
 
-.social-link:hover{
-  color:#00F5FF !important;
+.social-link:hover {
+  color: var(--accent) !important;
   transform: translateY(-2px) scale(1.15);
-  filter: drop-shadow(0 0 10px #00F5FF);
+  filter: drop-shadow(0 0 10px var(--accent));
 }

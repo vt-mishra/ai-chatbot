@@ -338,21 +338,18 @@ if (selected.type.startsWith("image/")) {
     transition-all
     duration-300
   "
-  style={{
-    background: "rgba(255,255,255,.03)",
-    border: "1px solid rgba(0,245,255,.12)",
-  }}
-  onMouseEnter={(e) => {
-    e.currentTarget.style.background =
-      "linear-gradient(135deg,#00F5FF22,#8B5CF622)";
-    e.currentTarget.style.boxShadow =
-      "0 0 18px rgba(0,245,255,.25)";
-  }}
-  onMouseLeave={(e) => {
-    e.currentTarget.style.background =
-      "rgba(255,255,255,.03)";
-    e.currentTarget.style.boxShadow = "none";
-  }}
+style={{
+  background: "var(--card)",
+  border: "1px solid var(--border)",
+  color: "var(--text)",
+}}
+onMouseEnter={(e) => {
+  e.currentTarget.style.background = "var(--menu-hover)";
+}}
+
+onMouseLeave={(e) => {
+  e.currentTarget.style.background = "var(--card)";
+}}
 >
   <FiPlus size={20} />
 </Menu.Button>
@@ -363,8 +360,8 @@ if (selected.type.startsWith("image/")) {
     bottom-14
     left-0
     z-50
-   w-52 
-   sm:w-60
+    w-52
+    sm:w-60
     overflow-hidden
     rounded-2xl
     border
@@ -375,10 +372,9 @@ if (selected.type.startsWith("image/")) {
     zoom-in-95
   "
   style={{
-    background: "rgba(20,24,38,.92)",
-    borderColor: "rgba(0,245,255,.15)",
-    boxShadow:
-      "0 12px 35px rgba(0,0,0,.45),0 0 18px rgba(0,245,255,.08)",
+    background: "var(--menu-bg)",
+    borderColor: "var(--menu-border)",
+    boxShadow: "var(--menu-shadow)",
   }}
 >
 
@@ -392,9 +388,9 @@ if (selected.type.startsWith("image/")) {
       className="flex w-full items-center gap-3 rounded-xl px-4 py-3 transition"
       style={{
         background: active
-          ? "linear-gradient(135deg,rgba(0,245,255,.15),rgba(139,92,246,.15))"
+          ? "var(--menu-hover)"
           : "transparent",
-        color: active ? "#00F5FF" : "#E5E7EB",
+        color: "var(--text)",
       }}
     >
       <FiImage size={18} />
@@ -403,7 +399,7 @@ if (selected.type.startsWith("image/")) {
   )}
 </Menu.Item>
 
-  <Menu.Item>
+<Menu.Item>
   {({ active }) => (
     <button
       onClick={() => {
@@ -414,9 +410,9 @@ if (selected.type.startsWith("image/")) {
       className="flex w-full items-center gap-3 rounded-xl px-4 py-3 transition whitespace-nowrap"
       style={{
         background: active
-          ? "linear-gradient(135deg,rgba(0,245,255,.15),rgba(139,92,246,.15))"
+          ? "var(--menu-hover)"
           : "transparent",
-        color: active ? "#00F5FF" : "#E5E7EB",
+        color: "var(--text)",
       }}
     >
       <FiFileText size={18} />
