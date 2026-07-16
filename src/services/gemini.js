@@ -1,13 +1,19 @@
 import { GoogleGenAI } from "@google/genai";
+import { getApiKey } from "../utils/apiKey";
 
-const ai = new GoogleGenAI({
-  apiKey: import.meta.env.VITE_GEMINI_API_KEY,
-});
+function getAI() {
+  return new GoogleGenAI({
+    apiKey: getApiKey(),
+  });
+}
 
 function buildContents(history = []) {
+  // Only the latest uploaded image is sent to Gemini
+  const lastMessageId =
+    history[history.length - 1]?.id;
 
   return history
-    // Don't send AI-generated images back to Gemini
+    // Don't send AI generated images back to Gemini
     .filter(
       (message) =>
         !(message.role === "assistant" && message.type === "image")
@@ -23,8 +29,12 @@ function buildContents(history = []) {
         });
       }
 
-      // Only user uploaded images
-      if (message.role === "user" && message.image) {
+      // Only send the latest uploaded image
+      if (
+        message.id === lastMessageId &&
+        message.role === "user" &&
+        message.image
+      ) {
         const [meta, data] = message.image.split(",");
 
         const mimeType =
@@ -48,7 +58,7 @@ function buildContents(history = []) {
       };
     })
 
-    .filter((msg) => msg.parts.length > 0);
+    .filter((msg) => msg.parts.length);
 }
 
 export async function getGeminiResponse(
@@ -61,61 +71,73 @@ export async function getGeminiResponse(
     if (!contents.length) {
       return "❌ No message to send.";
     }
+
     const response =
-      await ai.models.generateContent({
+      await getAI().models.generateContent({
         model: "gemini-2.5-flash",
         contents,
         // signal,
       });
 
     return response.text || "";
-  } catch (error) {
-    if (
-      error.name === "AbortError" ||
-      error.message?.includes("aborted")
-    ) {
-      return "";
-    }
-
-    console.error("Gemini Error:", error);
-
-    return "❌ Sorry, something went wrong.";
+} catch (error) {
+  if (
+    error.name === "AbortError" ||
+    error.message?.includes("aborted")
+  ) {
+    return "";
   }
+
+  if(error === "An API Key must be set when running in a browser"){
+    return ""
+  }
+  console.error("Gemini Error:", error);
+
+  const message =
+    error?.message ||
+    JSON.stringify(error);
+
+  // Quota exceeded
+  if (
+    message.includes("429") ||
+    message.includes("RESOURCE_EXHAUSTED")
+  ) {
+    return "__QUOTA_EXCEEDED__";
+  }
+
+  // Invalid or missing API key
+  if (
+    message.includes("401") ||
+    message.includes("403") ||
+    message.includes("API_KEY_INVALID") ||
+    message.includes("API key") ||
+    message.includes("API_KEY") ||
+    message.includes("PERMISSION_DENIED")
+  ) {
+    return "__INVALID_API_KEY__";
+  }
+
+  return "❌ Sorry, something went wrong.";
+}
 }
 
-export async function generateChatTitle(prompt) {
-  try {
-    const response =
-      await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-
-        contents: [
-          {
-            role: "user",
-            parts: [
-              {
-                text: `Generate a short chat title (maximum 5 words).
-
-Rules:
-- Return only the title.
-- No quotes.
-- No punctuation at the end.
-- No explanation.
-
-User message:
-${prompt}`,
-              },
-            ],
-          },
-        ],
-      });
-
-    return response.text.trim();
-  } catch (error) {
-    console.error(error);
-
-    return prompt.length > 30
-      ? prompt.slice(0, 30) + "..."
-      : prompt;
+/**
+ * Local title generation
+ * No Gemini API call required.
+ */
+export function generateChatTitle(prompt) {
+  if (!prompt?.trim()) {
+    return "New Chat";
   }
+
+  let title = prompt
+    .replace(/\n/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (title.length > 35) {
+    title = title.slice(0, 35).trim() + "...";
+  }
+
+  return title;
 }

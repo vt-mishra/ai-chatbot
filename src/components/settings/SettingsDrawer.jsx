@@ -14,6 +14,10 @@ import {
   FiGithub,
   FiLinkedin,
   FiGlobe,
+   FiEye, 
+   FiEyeOff, 
+   FiKey,
+   FiSave,
 } from "react-icons/fi";
 
 import { useThemeContext } from "../../context/ThemeContext";
@@ -24,11 +28,34 @@ import {
   downloadMarkdown,
 } from "../../utils/exportChat";
 import Swal from "sweetalert2";
-
+import { useState } from "react";
+import toast from "react-hot-toast";  
+import { getApiKey, saveApiKey,removeApiKey } from "../../utils/apiKey";
 function SettingsDrawer({ open, onClose }) {
   const { theme, setTheme } = useThemeContext();
 
   const isDark = theme === "dark";
+const [apiKey, setApiKey] = useState(getApiKey() || "");
+const [showKey, setShowKey] = useState(false);
+
+
+const handleSaveApiKey = () => {
+  const key = apiKey.trim();
+
+  if (!key) {
+    toast.error("Please enter a Gemini API key.");
+    return;
+  }
+
+  if (!key.startsWith("AQ.Ab")) {
+    toast.error("Please enter a valid Gemini API key.");
+    return;
+  }
+
+  saveApiKey(key);
+
+  toast.success("Gemini API key saved successfully.");
+};
 
 const drawerStyle = {
   background: "var(--sidebar)",
@@ -286,32 +313,130 @@ min-h-[52px]transition-all duration-300"
 
           </div>
 
-          {/* AI */}
+{/* API */}
+<div
+  className="mt-6 rounded-xl p-4 space-y-4"
+  style={cardStyle}
+>
+  <div className="flex items-center gap-2">
+    <FiKey size={18} />
+    <h3 className="font-semibold">
+      Gemini API Key
+    </h3>
+  </div>
 
-          <div>
+  <p
+    style={{
+      color: "var(--text-secondary)",
+      fontSize: 14,
+      lineHeight: 1.6,
+    }}
+  >
+    If the shared API quota is exhausted, you can use
+    your own free Gemini API key.
+  </p>
 
-            <h3
-              className="mb-4 text-sm uppercase tracking-wide"
-              style={headingStyle}
-            >
-              AI
-            </h3>
+  <div className="relative">
+    <input
+      type={showKey ? "text" : "password"}
+      value={apiKey}
+      onChange={(e) =>
+        setApiKey(e.target.value)
+      }
+      placeholder="AIzaSy..."
+      className="w-full rounded-xl p-3 pr-12 outline-none"
+      style={{
+        background: "var(--bg)",
+        color: "var(--text)",
+        border: "1px solid var(--border)",
+      }}
+    />
 
-            <button
-              className="flex w-full items-center justify-between rounded-xl p-3 transition"
+    <button
+      onClick={() => setShowKey(!showKey)}
+      className="absolute right-3 top-1/2 -translate-y-1/2"
+      style={{
+        color: "var(--text-secondary)",
+      }}
+    >
+      {showKey ? <FiEyeOff /> : <FiEye />}
+    </button>
+  </div>
+
+  <button
+   disabled={!apiKey.trim()}
+    onClick={handleSaveApiKey}
+      className="flex w-full items-center justify-between rounded-xl
+p-3
+sm:p-3
+min-h-[52px]transition-all duration-300"
+  style={{
+      background: apiKey.trim()
+      ? activeButtonStyle
+      : cardStyle,
+
+       cursor: apiKey.trim()
+    ? "pointer"
+    : "not-allowed",
+
+  opacity: apiKey.trim()
+    ? 1
+    : .6,
+  }}
+  onMouseEnter={handleHover}
+  onMouseLeave={handleLeave}
+  >
+    
+    <span className="flex items-center gap-3"> <FiSave/>
+     Save API Key</span>
+   {apiKey.trim() && "✓"}
+  </button>
+
+<div
+  className="text-xs text-center rounded-lg py-2"
+  style={{
+    background: apiKey
+      ? "rgba(34,197,94,.12)"
+      : "rgba(59,130,246,.10)",
+
+    color: apiKey
+      ? "#22c55e"
+      : "#60a5fa",
+  }}
+>
+  {apiKey
+    ? "✓ Personal Gemini API Key Active"
+    : "Using Shared Gemini API Key"}
+</div>
+<a
+  href="https://aistudio.google.com/apikey"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <button
+    className="flex w-full items-center justify-between rounded-xl p-3 transition"
               style={cardStyle}
                 onMouseEnter={handleHover}
     onMouseLeave={handleLeave}
-            >
-              <span className="flex items-center gap-3">
-                <FiZap />
-                Typing Speed
-              </span>
+  >
+     <span className="flex items-center gap-3">
+        <FiZap />
+    Get Free Gemini API Key 
+     </span>
+  ↗
+  </button>
+</a>
 
-              Fast
-            </button>
-
-          </div>
+  <p
+    className="pt-2 text-xs text-center"
+    style={{
+      color: "var(--text-secondary)",
+    }}
+  >
+    Your API key is stored only in this browser and is
+    never sent to our server.
+  </p>
+</div>
 
           {/* Export */}
 

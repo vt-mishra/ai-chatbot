@@ -12,6 +12,7 @@ import { fileToBase64 } from "../utils/fileToBase64";
 import { generateImage } from "../services/imageGeneration";
 import { extractFileText } from "../utils/extractFileText";
 import { speak, stopSpeaking } from "../utils/speech";
+import toast from "react-hot-toast";
 export default function useChat() {
   const [conversations, setConversations] = useState(() => {
     const data = loadConversations();
@@ -61,6 +62,29 @@ const [voiceEnabled, setVoiceEnabled] = useState(true);
     }
   }, [conversations, currentChatId]);
 
+  useEffect(() => {
+  const handleOffline = () => {
+    toast.error("📡 No internet connection.");
+  };
+
+  const handleOnline = () => {
+    toast.success("✅ Back online.");
+  };
+
+  window.addEventListener("offline", handleOffline);
+  window.addEventListener("online", handleOnline);
+
+  return () => {
+    window.removeEventListener("offline", handleOffline);
+    window.removeEventListener("online", handleOnline);
+  };
+}, []);
+
+  useEffect(() => {
+  if (!voiceEnabled) {
+    stopSpeaking();
+  }
+}, [voiceEnabled]);
   const currentConversation = useMemo(() => {
     return conversations.find(
       (chat) => chat.id === currentChatId
@@ -173,10 +197,10 @@ const stopGeneration = () => {
       : cleaned;
   };
 
-  stopSpeaking();
+
   const sendMessage = async (text,image,file,mode = "chat") => {
     let prompt = text.trim();
-
+  stopSpeaking();
 if (!prompt && file) {
   prompt = "Summarize this document.";
 }
@@ -188,7 +212,10 @@ if (!prompt && file) {
   return;
 
     const chatId = currentChatId;
-
+if (!navigator.onLine) {
+  toast.error("📡 No internet connection. Reconnect and try again.");
+  return;
+}
     setLoading(true);
 
    let imageData = null;
@@ -234,18 +261,18 @@ const isFirstMessage =
   currentConversation?.messages.length === 0;
 
 if (isFirstMessage) {
-generateChatTitle(prompt).then((title) => {
-  setConversations((prev) =>
-    prev.map((chat) =>
-      chat.id === chatId
-        ? {
-            ...chat,
-            title: title || createChatTitle(prompt),
-          }
-        : chat
-    )
-  );
-});
+const title = generateChatTitle(prompt);
+
+setConversations((prev) =>
+  prev.map((chat) =>
+    chat.id === chatId
+      ? {
+          ...chat,
+          title: title || createChatTitle(prompt),
+        }
+      : chat
+  )
+);
 }
 
     try {
@@ -256,18 +283,19 @@ if (file) {
 }
 
 const history = [
-  ...currentConversation.messages,
+  ...currentConversation.messages.slice(-20),
   {
     ...userMessage,
-    text: fileText.length > 0
-      ? `User Prompt:
+    text:
+      fileText.length > 0
+        ? `User Prompt:
 
 ${prompt}
 
 Attached document:
 
 ${fileText}`
-      : prompt,
+        : prompt,
   },
 ];
 
@@ -304,6 +332,19 @@ const reply = await getGeminiResponse(
   abortControllerRef.current.signal
 );
 
+if (reply === "__QUOTA_EXCEEDED__") {
+  toast.error(
+    "Daily Gemini quota reached. Please try again tomorrow or add your own API key in Settings."
+  );
+  return;
+}
+
+if (reply === "__INVALID_API_KEY__") {
+  toast.error(
+    "Invalid Gemini API key. Please update it in Settings."
+  );
+  return;
+}
       const assistantMessageId = crypto.randomUUID();
 
       setLoading(false);
@@ -355,6 +396,8 @@ const reply = await getGeminiResponse(
 );
 
 if (voiceEnabled && reply.trim()) {
+  stopSpeaking();
+
   setTimeout(() => {
     speak(reply);
   }, 150);
@@ -416,10 +459,9 @@ stopGenerationRef.current = false;
     setStreaming(true);
 
     try {
-const history = current.messages.slice(
-  0,
-  assistantIndex
-);
+const history = current.messages
+  .slice(0, assistantIndex)
+  .slice(-20);
 abortControllerRef.current = new AbortController();
 
 const assistantMessage =
@@ -455,6 +497,19 @@ const reply = await getGeminiResponse(
   history,
   abortControllerRef.current.signal
 );
+if (reply === "__QUOTA_EXCEEDED__") {
+  toast.error(
+    "Daily Gemini quota reached. Please try again tomorrow or add your own API key in Settings."
+  );
+  return;
+}
+
+if (reply === "__INVALID_API_KEY__") {
+  toast.error(
+    "Invalid Gemini API key. Please update it in Settings."
+  );
+  return;
+}
 
     await typeText(
   reply,
@@ -481,7 +536,10 @@ const reply = await getGeminiResponse(
   },
   () => stopGenerationRef.current
 );
+
 if (voiceEnabled && reply.trim()) {
+  stopSpeaking();
+
   setTimeout(() => {
     speak(reply);
   }, 150);
@@ -540,27 +598,27 @@ setConversations((prev) =>
 );
 
 if (isFirstMessage) {
- const titlePrompt = prompt || file?.name || "New Chat";
+const titlePrompt = text;
 
-generateChatTitle(titlePrompt).then((title) => {
-  setConversations((prev) =>
-    prev.map((chat) =>
-      chat.id === chatId
-        ? {
-            ...chat,
-            title: title || createChatTitle(titlePrompt),
-          }
-        : chat
-    )
-  );
-});
+const title = generateChatTitle(titlePrompt);
+
+setConversations((prev) =>
+  prev.map((chat) =>
+    chat.id === chatId
+      ? {
+          ...chat,
+          title: title || createChatTitle(titlePrompt),
+        }
+      : chat
+  )
+);
 }
 
 cancelEditing();
 stopGenerationRef.current = false;
 setStreaming(true);
   try {
-const history = updatedMessages;
+const history = updatedMessages.slice(-20);
 abortControllerRef.current = new AbortController();
 const editedMessage = updatedMessages[messageIndex];
 
@@ -595,7 +653,19 @@ const reply = await getGeminiResponse(
   history,
   abortControllerRef.current.signal
 );
+if (reply === "__QUOTA_EXCEEDED__") {
+  toast.error(
+    "Daily Gemini quota reached. Please try again tomorrow or add your own API key in Settings."
+  );
+  return;
+}
 
+if (reply === "__INVALID_API_KEY__") {
+  toast.error(
+    "Invalid Gemini API key. Please update it in Settings."
+  );
+  return;
+}
     const assistantId = crypto.randomUUID();
 
     setConversations((prev) =>
@@ -643,6 +713,8 @@ const reply = await getGeminiResponse(
   () => stopGenerationRef.current
 );
 if (voiceEnabled && reply.trim()) {
+  stopSpeaking();
+
   setTimeout(() => {
     speak(reply);
   }, 150);
