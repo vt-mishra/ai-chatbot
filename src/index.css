@@ -208,3 +208,46 @@ textarea::placeholder {
   transform: translateY(-2px) scale(1.15);
   filter: drop-shadow(0 0 10px var(--accent));
 }
+
+.neon-popup{
+  border:1px solid rgba(0,245,255,.25);
+  border-radius:18px;
+  box-shadow:
+      0 0 30px rgba(0,245,255,.18),
+      0 0 70px rgba(139,92,246,.12);
+  backdrop-filter: blur(18px);
+}
+
+.neon-title{
+  color:#fff;
+}
+
+.neon-delete-btn{
+  background:linear-gradient(135deg,#ef4444,#b91c1c);
+  color:#fff;
+  border:none;
+  border-radius:12px;
+  padding:12px 24px;
+  transition:.25s;
+}
+
+.neon-delete-btn:hover{
+  box-shadow:0 0 18px rgba(239,68,68,.5);
+  transform:translateY(-2px);
+}
+
+.neon-cancel-btn{
+  background:#1f2937;
+  color:#fff;
+  border:1px solid rgba(0,245,255,.2);
+  border-radius:12px;
+  padding:12px 24px;
+}
+
+.neon-cancel-btn:hover{
+  box-shadow:0 0 16px rgba(0,245,255,.35);
+}
+
+.swal2-actions {
+  gap: 12px !important;
+}

@@ -30,7 +30,7 @@ import {
 import Swal from "sweetalert2";
 import { useState } from "react";
 import toast from "react-hot-toast";  
-import { getApiKey, saveApiKey,removeApiKey } from "../../utils/apiKey";
+import { getApiKey, saveApiKey,removeApiKey,hasCustomApiKey } from "../../utils/apiKey";
 function SettingsDrawer({ open, onClose }) {
   const { theme, setTheme } = useThemeContext();
 
@@ -38,6 +38,9 @@ function SettingsDrawer({ open, onClose }) {
 const [apiKey, setApiKey] = useState(getApiKey() || "");
 const [showKey, setShowKey] = useState(false);
 
+const isValidApiKey =
+  apiKey.trim().startsWith("AQ.Ab") &&
+  apiKey.trim().length > 30;
 
 const handleSaveApiKey = () => {
   const key = apiKey.trim();
@@ -57,6 +60,11 @@ const handleSaveApiKey = () => {
   toast.success("Gemini API key saved successfully.");
 };
 
+const handleResetApiKey = async () => {
+  removeApiKey();
+  toast.success("API Key Reset");
+  window.location.reload();
+};
 const drawerStyle = {
   background: "var(--sidebar)",
   color: "var(--text)",
@@ -79,8 +87,14 @@ const activeButtonStyle = {
 
 const handleHover = (e) => {
   e.currentTarget.style.transform = "translateY(-2px)";
-  e.currentTarget.style.boxShadow =
-    "0 0 25px rgba(0,255,255,.35)";
+
+  if (e.currentTarget.dataset.danger === "true") {
+    e.currentTarget.style.boxShadow =
+      "0 0 28px rgba(239,68,68,.55)";
+  } else {
+    e.currentTarget.style.boxShadow =
+      "0 0 25px rgba(0,255,255,.35)";
+  }
 };
 
 const handleLeave = (e) => {
@@ -343,7 +357,7 @@ min-h-[52px]transition-all duration-300"
       onChange={(e) =>
         setApiKey(e.target.value)
       }
-      placeholder="AIzaSy..."
+      placeholder="AQ.Ab..."
       className="w-full rounded-xl p-3 pr-12 outline-none"
       style={{
         background: "var(--bg)",
@@ -363,34 +377,29 @@ min-h-[52px]transition-all duration-300"
     </button>
   </div>
 
-  <button
-   disabled={!apiKey.trim()}
-    onClick={handleSaveApiKey}
-      className="flex w-full items-center justify-between rounded-xl
-p-3
-sm:p-3
-min-h-[52px]transition-all duration-300"
+<button
+  disabled={!isValidApiKey}
+  onClick={handleSaveApiKey}
+  className="flex w-full items-center justify-between rounded-xl p-3 transition-all duration-300"
   style={{
-      background: apiKey.trim()
-      ? activeButtonStyle
-      : cardStyle,
+    ...(isValidApiKey ? activeButtonStyle : cardStyle),
 
-       cursor: apiKey.trim()
-    ? "pointer"
-    : "not-allowed",
+    cursor: isValidApiKey
+      ? "pointer"
+      : "not-allowed",
 
-  opacity: apiKey.trim()
-    ? 1
-    : .6,
+    opacity: isValidApiKey ? 1 : 0.6,
   }}
-  onMouseEnter={handleHover}
-  onMouseLeave={handleLeave}
-  >
-    
-    <span className="flex items-center gap-3"> <FiSave/>
-     Save API Key</span>
-   {apiKey.trim() && "✓"}
-  </button>
+  onMouseEnter={isValidApiKey ? handleHover : undefined}
+  onMouseLeave={isValidApiKey ? handleLeave : undefined}
+>
+  <span className="flex items-center gap-3">
+    <FiSave />
+    Save API Key
+  </span>
+
+  {isValidApiKey && "✓"}
+</button>
 
 <div
   className="text-xs text-center rounded-lg py-2"
@@ -404,10 +413,11 @@ min-h-[52px]transition-all duration-300"
       : "#60a5fa",
   }}
 >
-  {apiKey
+  {hasCustomApiKey()
     ? "✓ Personal Gemini API Key Active"
     : "Using Shared Gemini API Key"}
 </div>
+<div className="flex flex-col gap-3"> 
 <a
   href="https://aistudio.google.com/apikey"
   target="_blank"
@@ -427,8 +437,24 @@ min-h-[52px]transition-all duration-300"
   </button>
 </a>
 
+{hasCustomApiKey() && (
+  <button
+    onClick={handleResetApiKey}
+    className="flex w-full items-center justify-between rounded-xl p-3 transition"
+    style={cardStyle}
+    onMouseEnter={handleHover}
+    onMouseLeave={handleLeave}
+  >
+    <span className="flex items-center gap-3">
+      <FiKey />
+      Reset to Default API Key
+    </span>
+
+    ↺
+  </button>
+)}
   <p
-    className="pt-2 text-xs text-center"
+    className="text-xs text-center"
     style={{
       color: "var(--text-secondary)",
     }}
@@ -436,6 +462,7 @@ min-h-[52px]transition-all duration-300"
     Your API key is stored only in this browser and is
     never sent to our server.
   </p>
+  </div>
 </div>
 
           {/* Export */}
@@ -494,30 +521,30 @@ min-h-[52px]transition-all duration-300"
 
 <button
   onClick={async () => {
-    const result = await Swal.fire({
-      title: "Clear all chats?",
-      text: "This action cannot be undone.",
-      icon: "warning",
+  const result = await Swal.fire({
+  title: "Clear all chats?",
+  text: "This action cannot be undone.",
+  icon: "warning",
 
-      showCancelButton: true,
+  showCancelButton: true,
+  confirmButtonText: "Delete",
+  cancelButtonText: "Cancel",
 
-      confirmButtonText: "Delete",
+  confirmButtonColor: "#ef4444",
+  cancelButtonColor: "#27272a",
 
-      cancelButtonText: "Cancel",
+  background: "#0f172a",
+  color: "#fff",
 
-      confirmButtonColor: "#dc2626",
+  customClass: {
+    popup: "neon-popup",
+    title: "neon-title",
+    confirmButton: "neon-delete-btn",
+    cancelButton: "neon-cancel-btn",
+  },
 
-      cancelButtonColor: "#3f3f46",
-
-      background: theme === "dark"
-        ? "#202123"
-        : "#ffffff",
-
-      color:
-        theme === "dark"
-          ? "#ffffff"
-          : "#111827",
-    });
+  buttonsStyling: false,
+});
 
     if (!result.isConfirmed) return;
 
@@ -525,42 +552,26 @@ min-h-[52px]transition-all duration-300"
 
     onClose();
 
-    Swal.fire({
-      icon: "success",
-
-      title: "Deleted",
-
-      text: "All chats have been removed.",
-
-      timer: 1500,
-
-      showConfirmButton: false,
-
-      background:
-        theme === "dark"
-          ? "#202123"
-          : "#ffffff",
-
-      color:
-        theme === "dark"
-          ? "#ffffff"
-          : "#111827",
-    });
+   toast.success("All chats cleared.");
   }}
   className="
 w-full
 rounded-xl
 p-2
 sm:p-3
-bg-red-600
 transition
-hover:bg-red-700
 flex
 items-center
 justify-center
 gap-2
 "
-  onMouseEnter={handleHover}
+style={{
+  background: "linear-gradient(135deg,#ef4444,#b91c1c)",
+  color: "#fff",
+  boxShadow: "0 0 20px rgba(239,68,68,.35)",
+}}
+data-danger="true"
+   onMouseEnter={handleHover}
     onMouseLeave={handleLeave}
 >
   <FiTrash2 />
