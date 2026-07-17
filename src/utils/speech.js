@@ -1,28 +1,32 @@
 let utterance = null;
 
-// Load voices
+// Load available voices
 window.speechSynthesis.onvoiceschanged = () => {
   speechSynthesis.getVoices();
 };
 
 function cleanText(text) {
   return text
-    // Remove markdown
+    // Remove code blocks
     .replace(/```[\s\S]*?```/g, "")
+
+    // Remove inline code
     .replace(/`([^`]*)`/g, "$1")
+
+    // Remove markdown
     .replace(/\*\*(.*?)\*\*/g, "$1")
     .replace(/\*(.*?)\*/g, "$1")
     .replace(/__(.*?)__/g, "$1")
     .replace(/_(.*?)_/g, "$1")
 
-    // Remove URLs
-    .replace(/https?:\/\/\S+/g, "")
-
-    // Remove markdown headings
+    // Remove headings
     .replace(/^#+\s/gm, "")
 
-    // Remove bullets
+    // Remove bullet points
     .replace(/^\s*[-*•]\s/gm, "")
+
+    // Remove URLs
+    .replace(/https?:\/\/\S+/g, "")
 
     // Remove emojis
     .replace(
@@ -30,15 +34,58 @@ function cleanText(text) {
       ""
     )
 
-    // Compress spaces
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function getBestVoice(isHindi) {
+  const voices = speechSynthesis.getVoices();
+
+  console.table(
+    voices.map((v) => ({
+      Name: v.name,
+      Lang: v.lang,
+    }))
+  );
+
+  const femaleKeywords = [
+    "female",
+    "jenny",
+    "aria",
+    "zira",
+    "samantha",
+    "hazel",
+    "google uk english female",
+  ];
+
+  // Prefer female voice
+  let voice = voices.find((v) => {
+    const name = v.name.toLowerCase();
+
+    return (
+      (isHindi
+        ? v.lang.startsWith("hi")
+        : v.lang.startsWith("en")) &&
+      femaleKeywords.some((k) => name.includes(k))
+    );
+  });
+
+  // Any Hindi/English voice
+  if (!voice) {
+    voice = voices.find((v) =>
+      isHindi
+        ? v.lang.startsWith("hi")
+        : v.lang.startsWith("en")
+    );
+  }
+
+  // Fallback
+  return voice || voices[0];
 }
 
 export function speak(text) {
   if (!text) return;
 
-  // Stop previous speech
   speechSynthesis.cancel();
 
   const clean = cleanText(text);
@@ -49,16 +96,7 @@ export function speak(text) {
 
   utterance.lang = isHindi ? "hi-IN" : "en-IN";
 
-  const voices = speechSynthesis.getVoices();
-
-  utterance.voice =
-    voices.find((v) => v.lang === utterance.lang) ||
-    voices.find((v) =>
-      isHindi
-        ? v.lang.startsWith("hi")
-        : v.lang.startsWith("en")
-    ) ||
-    voices[0];
+  utterance.voice = getBestVoice(isHindi);
 
   utterance.rate = 1;
   utterance.pitch = 1;

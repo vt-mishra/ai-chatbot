@@ -28,19 +28,32 @@ import {
   downloadMarkdown,
 } from "../../utils/exportChat";
 import Swal from "sweetalert2";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import toast from "react-hot-toast";  
-import { getApiKey, saveApiKey,removeApiKey,hasCustomApiKey } from "../../utils/apiKey";
+import {
+  getApiKey,
+  getCustomApiKey,
+  saveApiKey,
+  removeApiKey,
+} from "../../utils/apiKey";
 function SettingsDrawer({ open, onClose }) {
   const { theme, setTheme } = useThemeContext();
 
   const isDark = theme === "dark";
-const [apiKey, setApiKey] = useState(getApiKey() || "");
+const [apiKey, setApiKey] = useState("");
+const [usingPersonal, setUsingPersonal] = useState(false);
 const [showKey, setShowKey] = useState(false);
 
 const isValidApiKey =
   apiKey.trim().startsWith("AQ.Ab") &&
   apiKey.trim().length > 30;
+
+useEffect(() => {
+  const customKey = getCustomApiKey();
+
+  setUsingPersonal(!!customKey);
+  setApiKey(customKey || getApiKey());
+}, [open]);
 
 const handleSaveApiKey = () => {
   const key = apiKey.trim();
@@ -57,13 +70,18 @@ const handleSaveApiKey = () => {
 
   saveApiKey(key);
 
+  setUsingPersonal(true);
+
   toast.success("Gemini API key saved successfully.");
 };
 
-const handleResetApiKey = async () => {
+const handleResetApiKey = () => {
   removeApiKey();
-  toast.success("API Key Reset");
-  window.location.reload();
+
+  setUsingPersonal(false);
+  setApiKey(getApiKey()); // shared key
+
+  toast.success("API key reset.");
 };
 const drawerStyle = {
   background: "var(--sidebar)",
@@ -413,7 +431,7 @@ min-h-[52px]transition-all duration-300"
       : "#60a5fa",
   }}
 >
-  {hasCustomApiKey()
+  {usingPersonal
     ? "✓ Personal Gemini API Key Active"
     : "Using Shared Gemini API Key"}
 </div>
@@ -437,7 +455,7 @@ min-h-[52px]transition-all duration-300"
   </button>
 </a>
 
-{hasCustomApiKey() && (
+{usingPersonal && (
   <button
     onClick={handleResetApiKey}
     className="flex w-full items-center justify-between rounded-xl p-3 transition"
