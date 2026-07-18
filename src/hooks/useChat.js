@@ -308,7 +308,7 @@ if (mode === "image") {
     role: "assistant",
     type: "image",
     image,
-    prompt: text,
+  
   };
 
   setLoading(false);
@@ -334,7 +334,7 @@ const reply = await getGeminiResponse(
 
 if (reply === "__QUOTA_EXCEEDED__") {
   toast.error(
-    "Daily Gemini quota reached. Please try again tomorrow or add your own API key in Settings."
+    "Daily Gemini quota reached. Please try again later or add your own API key in Settings."
   );
   return;
 }
@@ -499,7 +499,7 @@ const reply = await getGeminiResponse(
 );
 if (reply === "__QUOTA_EXCEEDED__") {
   toast.error(
-    "Daily Gemini quota reached. Please try again tomorrow or add your own API key in Settings."
+    "Daily Gemini quota reached. Please try again later or add your own API key in Settings."
   );
   return;
 }
@@ -638,7 +638,7 @@ if (editedMessage.mode === "image") {
                         role: "assistant",
                         type: "image",
                         image,
-                        prompt: text,
+                      
                     },
                 ],
             }
@@ -655,7 +655,7 @@ const reply = await getGeminiResponse(
 );
 if (reply === "__QUOTA_EXCEEDED__") {
   toast.error(
-    "Daily Gemini quota reached. Please try again tomorrow or add your own API key in Settings."
+    "Daily Gemini quota reached. Please try again later or add your own API key in Settings."
   );
   return;
 }

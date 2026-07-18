@@ -13,10 +13,7 @@ export async function generateImage(prompt) {
 }
 
 function generatePollinations(prompt) {
-  const encoded = encodeURIComponent(prompt);
+  const encoded = encodeURIComponent(prompt.trim());
 
-  // Random seed avoids browser caching
-  const seed = Date.now();
-
-  return `https://image.pollinations.ai/prompt/${encoded}?width=1024&height=1024&seed=${seed}`;
+  return `https://image.pollinations.ai/prompt/${encoded}?width=1024&height=1024`;
 }

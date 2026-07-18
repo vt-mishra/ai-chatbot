@@ -7,35 +7,49 @@ function getAI() {
   });
 }
 
+// Debug only (remove after testing)
+export async function listModels() {
+  try {
+    const models = await getAI().models.list();
+
+    console.log("Available models:");
+
+    for await (const model of models) {
+      console.log(model.name);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 function buildContents(history = []) {
-  // Only the latest uploaded image is sent to Gemini
   const lastMessageId =
     history[history.length - 1]?.id;
 
   return history
-    // Don't send AI generated images back to Gemini
     .filter(
       (message) =>
-        !(message.role === "assistant" && message.type === "image")
+        !(
+          message.role === "assistant" &&
+          message.type === "image"
+        )
     )
-
     .map((message) => {
       const parts = [];
 
-      // Text
       if (message.text?.trim()) {
         parts.push({
           text: message.text,
         });
       }
 
-      // Only send the latest uploaded image
       if (
         message.id === lastMessageId &&
         message.role === "user" &&
         message.image
       ) {
-        const [meta, data] = message.image.split(",");
+        const [meta, data] =
+          message.image.split(",");
 
         const mimeType =
           meta.match(/data:(.*?);base64/)?.[1] ||
@@ -57,7 +71,6 @@ function buildContents(history = []) {
         parts,
       };
     })
-
     .filter((msg) => msg.parts.length);
 }
 
@@ -74,57 +87,55 @@ export async function getGeminiResponse(
 
     const response =
       await getAI().models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-3.5-flash",
         contents,
-        // signal,
+        signal,
       });
 
-    return response.text || "";
-} catch (error) {
-  if (
-    error.name === "AbortError" ||
-    error.message?.includes("aborted")
-  ) {
-    return "";
+    // Latest SDK
+    if (typeof response.text === "function") {
+      return response.text();
+    }
+
+    // Fallback
+    return (
+      response.candidates?.[0]?.content?.parts
+        ?.map((part) => part.text || "")
+        .join("") || ""
+    );
+  } catch (error) {
+    if (
+      error.name === "AbortError" ||
+      error.message?.includes("aborted")
+    ) {
+      return "";
+    }
+
+    console.error("Gemini Error:", error);
+
+    const message =
+      error?.message || JSON.stringify(error);
+
+    if (
+      message.includes("429") ||
+      message.includes("RESOURCE_EXHAUSTED")
+    ) {
+      return "__QUOTA_EXCEEDED__";
+    }
+
+    if (
+      message.includes("401") ||
+      message.includes("403") ||
+      message.includes("API_KEY_INVALID") ||
+      message.includes("PERMISSION_DENIED")
+    ) {
+      return "__INVALID_API_KEY__";
+    }
+
+    return "❌ Sorry, something went wrong.";
   }
-
-  if(error === "An API Key must be set when running in a browser"){
-    return ""
-  }
-  console.error("Gemini Error:", error);
-
-  const message =
-    error?.message ||
-    JSON.stringify(error);
-
-  // Quota exceeded
-  if (
-    message.includes("429") ||
-    message.includes("RESOURCE_EXHAUSTED")
-  ) {
-    return "__QUOTA_EXCEEDED__";
-  }
-
-  // Invalid or missing API key
-  if (
-    message.includes("401") ||
-    message.includes("403") ||
-    message.includes("API_KEY_INVALID") ||
-    message.includes("API key") ||
-    message.includes("API_KEY") ||
-    message.includes("PERMISSION_DENIED")
-  ) {
-    return "__INVALID_API_KEY__";
-  }
-
-  return "❌ Sorry, something went wrong.";
 }
-}
 
-/**
- * Local title generation
- * No Gemini API call required.
- */
 export function generateChatTitle(prompt) {
   if (!prompt?.trim()) {
     return "New Chat";
